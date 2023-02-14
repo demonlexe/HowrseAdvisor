@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "HowrseAdvisor",
+  "version": "1.0",
+  "description": "My own little tweaks to the Howrse website",
+  "content_scripts": [
+    {
+      "js": ["assets/jquery-3.6.1.js","scripts/content.js"],
+      "matches": [
+        "https://us.howrse.com/elevage/chevaux/cheval*",
+        "https://us.howrse.com/elevage/chevaux/centreInscription*"
+      ]
+    }
+  ],
+  "permissions": [
+    "webNavigation"
+  ],
+  "background": {
+    "service_worker": "scripts/background.js",
+    "persistant": true
+  }
+}
