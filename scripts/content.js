@@ -1,4 +1,3 @@
-console.log("I made it");
 const pricePerDayCap = 40;
 
 // This is for if we were loaded from https://us.howrse.com/elevage/chevaux/cheval
@@ -23,7 +22,14 @@ function waitForElement(selector) {
     });
 }
 
-waitForElement("#care").then((value) => {
+waitForElement("#care").then(async (value) => {
+    const isExtensionEnabled = await getData("extensionEnabled");
+
+    if (!isExtensionEnabled) {
+        return;
+
+    }
+
     // Options for the observer (which mutations to observe)
     const config = { attributes: true, childList: true, subtree: true, attributeFilter: ['style'] };
 
@@ -53,7 +59,14 @@ waitForElement("#care").then((value) => {
     observer.observe(value, config);
 });
 
-waitForElement("#cheval-inscription").then((value) => {
+waitForElement("#cheval-inscription").then(async (value) => {
+    const isExtensionEnabled = await getData("extensionEnabled");
+
+    if (!isExtensionEnabled) {
+        return;
+
+    }
+
     // console.log("Element is ", value)
     const jqueryVal = $(value);
     if (value && jqueryVal) {
@@ -66,7 +79,15 @@ waitForElement("#cheval-inscription").then((value) => {
     }
 });
 
-waitForElement("#table-0").then((value) => {
+waitForElement("#table-0").then(async (value) => {
+
+    const isExtensionEnabled = await getData("extensionEnabled");
+
+    if (!isExtensionEnabled) {
+        return;
+
+    }
+
 
     setTimeout(() => {
         const aToTrigger = $('a:contains("10 days")')
@@ -83,14 +104,22 @@ waitForElement("#table-0").then((value) => {
         }
     }, 500);
 });
+
 presetHayAndOats();
 
-waitForElement("#boutonNourrir").then((value) => {
+waitForElement("#boutonNourrir").then(async (value) => {
     $(value).on('click', () => { presetHayAndOats(); });
 
 });
 
-function presetHayAndOats() {
+async function presetHayAndOats() {
+    const isExtensionEnabled = await getData("extensionEnabled");
+
+    if (!isExtensionEnabled) {
+        return;
+
+    }
+
     waitForElement("#haySlider").then((value) => {
         const parent = $(value).parent();
         const hayQuantity = $(parent).find('span.section-fourrage-quantity').first().text();
