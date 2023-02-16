@@ -564,6 +564,14 @@ async function clickMission() {
             but.click();
         });
     }, 100);
+    setTimeout(() => {
+        waitForElement("#boutonMissionPlage").then((but) => { // Case for desert mission
+            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+
+            $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
+            but.click();
+        });
+    }, 100);
 
 }
 
