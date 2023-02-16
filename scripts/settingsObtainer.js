@@ -1,14 +1,26 @@
 
 import { getData, setData } from "./chrome_store.js";
-export async function getExtensionEnabled() {
-    const previousExtensionEnabled = await getData("extensionEnabled");
 
-    if (previousExtensionEnabled != null) {
-        $('#flexSwitchExtensionEnabled').prop('checked', previousExtensionEnabled);
-    }
-
+const settingsDefaults = {
+    extensionEnabled: true,
+    autoFeedEnabled: true,
+    autoMissionEnabled: true,
+    autoGroomSleepEnabled: true,
+    autoECEnabled: true
 }
 
-export async function setExtensionEnabled(extensionEnabled) {
-    setData("extensionEnabled", extensionEnabled);
+export async function changeSetting(settingName, settingValue) {
+    setData(settingName, settingValue);
+}
+
+export async function getSettingEnabled(settingName, flexSwitchId) {
+    const previousSettingEnabled = await getData(settingName);
+
+    if (previousSettingEnabled != null) {
+        $('#' + flexSwitchId).prop('checked', previousSettingEnabled);
+    }
+    else {
+        $('#' + flexSwitchId).prop('checked', settingsDefaults[settingName]);
+        changeSetting(settingName, settingsDefaults[settingName]);
+    }
 }
