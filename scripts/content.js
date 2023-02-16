@@ -3,7 +3,8 @@ let statusRef = {
     "GROOM_BUTTON_PENDING": false,
     "SLEEP_BUTTON_PENDING": false,
     "FEED_BUTTON_PENDING": false,
-    "MISSION_BUTTON_PENDING": false
+    "MISSION_BUTTON_PENDING": false,
+    "WAITING_FOR_EC_TABLE": false,
 };
 
 // TABLE OF DEFINITIONS
@@ -32,6 +33,7 @@ if (winPath) {
     else if (winPath.includes("elevage/chevaux/centreInscription")) {
         console.log("Inside case ", "elevage/chevaux/centreInscription")
         sortECTable();
+        watchECPage();
         console.log("Done inside case ", "elevage/chevaux/centreInscription")
     }
 }
@@ -54,6 +56,21 @@ function waitForElement(selector) {
             subtree: true
         });
     });
+}
+
+
+function checkForAscOrDesc(aElement) {
+    let firstA_img = $(aElement).find("img");
+    if (firstA_img && firstA_img[0]) {
+        let firstA_img_src = $(firstA_img).attr("src");
+        if (firstA_img_src && firstA_img_src.includes("desc")) {
+            return true;
+        }
+        else if (firstA_img_src && firstA_img_src.includes("asc")) {
+            return false;
+        }
+    }
+    return null;
 }
 
 async function checkButtonsConnected(buttonCase) {
@@ -109,6 +126,57 @@ async function monitorCareTabButtons() {
     checkButtonsConnected("ALL");
 }
 
+async function watchECPage() {
+
+    waitForElement("#centresContent").then(async (value) => {
+        // Options for the observer (which mutations to observe)
+        const config = { attributes: true, childList: true, subtree: true, attributeFilter: ['style'] };
+
+        // Callback function to execute when mutations are observed
+        const callback = (mutationList, observer) => {
+            for (const mutation of mutationList) {
+                // console.log("Mutation is ", mutation)
+                if (mutation.type === 'childList') {
+                    // Do button checking here?
+                    // console.log("Child list mutation is ", mutation, "added nodes are ", mutation.addedNodes, " removed nodes are ", mutation.removedNodes);
+                    if (mutation.removedNodes && mutation.removedNodes.length > 0) {
+                        const firstRemoved = mutation.removedNodes[0];
+                        if (firstRemoved && firstRemoved.id && firstRemoved.id.includes("table-0")) {
+                            statusRef["WAITING_FOR_EC_TABLE"] = true;
+                        }
+                    }
+                    else if (mutation.addedNodes && mutation.addedNodes.length > 0 && statusRef["WAITING_FOR_EC_TABLE"]) {
+                        // then the EC table has likely been added now.
+                        const triggeredA = $(value).find('a:contains("10 days")').first();
+                        if (triggeredA) {
+                            const isDescending = checkForAscOrDesc($(triggeredA).parent());
+                            if (!isDescending) {
+                                statusRef["WAITING_FOR_EC_TABLE"] = false;
+                                setTimeout(() => {
+                                    doneSortingEC();
+                                }, 100)
+                            }
+                        }
+                    }
+                } else if (mutation.type === 'attributes') {
+                    // console.log(`The ${mutation.attributeName} attribute was modified.`, "Mutation is ", mutation);
+                    const classList = mutation.target.classList // this returns an array of all classes
+                    const className = mutation.target.className // this returns a string containing all the classes separated with an space
+                    const id = mutation.target.id // this returns the id of the element
+                    // console.log("Class list is ", classList, " class name is ", className, " id is ", id);
+                }
+            }
+        };
+
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+
+        // Start observing the target node for configured mutations
+        observer.observe(value, config);
+    });
+
+}
+
 async function sortECTable() {
     waitForElement("#table-0").then(async (value) => {
 
@@ -126,12 +194,10 @@ async function sortECTable() {
             if (aToTrigger) {
                 const firstA = $(aToTrigger).first();
                 if (firstA && firstA[0]) {
-                    // console.log("firstA is ", firstA)
-
-                    firstA[0].click()
-                    setTimeout(() => {
-                        doneSorting();
-                    }, 1000); // Wait for the columns to load, give enough time for person to decide
+                    const isDescending = checkForAscOrDesc($(firstA).parent());
+                    if (isDescending == null) {
+                        firstA[0].click();
+                    };
                 }
             }
         }, 500);
@@ -274,7 +340,6 @@ async function watchFeedButton() {
     const isExtensionEnabled = await getData("extensionEnabled");
     if (!isExtensionEnabled) {
         return;
-
     }
     waitForElement("#feed-button").then(async (value) => {
         $(value).on('click', () => {
@@ -356,26 +421,42 @@ async function clickMission() {
             but.click();
         });
     }, 100);
+    setTimeout(() => {
+        waitForElement("#boutonMissionMontagne").then((but) => { // Case for iron mission
+            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+
+            $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
+            but.click();
+        });
+    }, 100);
 
 }
 
-function doneSorting() {
+function doneSortingEC() {
+    setTimeout(() => {
     const oddRows = $("tr.odd.highlight");
     // const firstRow = $(tbody).find('tr').first();
     if (oddRows) {
         const firstRow = $(oddRows).first();
         // console.log("firstRow is ", firstRow)
         const firstRowButtons = $(firstRow).find('button');
-        // console.log("firstRowButtons is ", firstRowButtons)
+            console.log("firstRowButtons is ", firstRowButtons)
+
         if (firstRowButtons[1]) {
+                // console.log("Going to click firstRowButtons[1]")
             firstRowButtons[1].click();
         }
         else if (firstRowButtons[2]) {
+                // console.log("Going to click firstRowButtons[2]")
             firstRowButtons[2].click();
         }
         else if (firstRowButtons[3]) {
+                // console.log("Going to click firstRowButtons[3]")
             firstRowButtons[3].click();
         }
+
+        }
+    }, 100);
     }
 
 }
