@@ -7,6 +7,10 @@ const settingsDefaults = {
     autoMissionEnabled: false,
     autoGroomSleepEnabled: true,
     autoECEnabled: false,
+    autoCompEnabled: false,
+    autoComp_competitionType: "race",
+    autoComp_priorityType: "Participants",
+    autoComp_excludeLowLevelComps: true,
 }
 
 export async function changeSetting(settingName, settingValue) {

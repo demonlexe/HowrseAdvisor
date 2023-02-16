@@ -17,6 +17,12 @@ let definitions = {
     "nourrir": "Yet to be fed"
 }
 
+let competitionMapping = {
+    "Kitty": 3,
+    "Difficulty": 4,
+    "Participants": 5,
+}
+
 // This is for if we were loaded from https://us.howrse.com/elevage/chevaux/cheval
 
 const winPath = window.location.pathname;
@@ -35,6 +41,12 @@ if (winPath) {
         sortECTable();
         watchECPage();
         console.log("Done inside case ", "elevage/chevaux/centreInscription")
+    }
+    else if (winPath.includes("elevage/competition/")) {
+        console.log("Inside case ", "elevage/competition/");
+        watchCompetitionPage();
+        chooseBestCompetition();
+        console.log("Done inside case ", "elevage/competition/");
     }
 }
 
@@ -58,6 +70,130 @@ function waitForElement(selector) {
     });
 }
 
+async function allowCompetitions() {
+    const isExtensionEnabled = await getData("extensionEnabled");
+    if (!isExtensionEnabled) {
+        return false;
+    }
+    const isAutoCompEnabled = await getData("autoCompEnabled");
+    if (!isAutoCompEnabled) {
+        return false;
+    }
+    return true;
+};
+
+async function watchCompetitionPage() {
+    const proceed = await allowCompetitions();
+    if (!proceed) {
+        return;
+    }
+    waitForElement("#competitionsContent").then(async (competitionDiv) => {
+        const config = { attributes: true, childList: true, subtree: true, attributeFilter: ['style'] };
+
+        // Callback function to execute when mutations are observed
+        const callback = (mutationList, observer) => {
+            for (const mutation of mutationList) {
+                if (mutation.type === 'childList') {
+                    // Do button checking here?
+                    console.log("Child list mutation is ", mutation, "added nodes are ", mutation.addedNodes, " removed nodes are ", mutation.removedNodes);
+                    if (mutation.addedNodes && mutation.addedNodes.length > 0) {
+                        chooseBestCompetition();
+                    }
+                } else if (mutation.type === 'attributes') {
+                    // console.log(`The ${mutation.attributeName} attribute was modified.`, "Mutation is ", mutation);
+                    const classList = mutation.target.classList // this returns an array of all classes
+                    const className = mutation.target.className // this returns a string containing all the classes separated with an space
+                    const id = mutation.target.id // this returns the id of the element
+                    // console.log("Class list is ", classList, " class name is ", className, " id is ", id);
+                }
+            }
+        };
+
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+
+        // Start observing the target node for configured mutations
+        observer.observe(competitionDiv, config);
+
+    });
+}
+
+async function chooseBestCompetition() {
+    const proceed = await allowCompetitions();
+    if (!proceed) {
+        return;
+    }
+    const compType = await getData("autoComp_competitionType");
+    if (!compType) {
+        return;
+    }
+    let priority = await getData("autoComp_priorityType");
+    if (!priority) {
+        return;
+    }
+    let excludeLowLevelComps = await getData("autoComp_excludeLowLevelComps");
+    if (excludeLowLevelComps == null) {
+        return;
+    }
+
+    // Determine if we want to be ascending or descending
+    let wantAscending = true;
+    if (priority.includes("Highest Difficulty")) {
+        wantAscending = false;
+    }
+    else if (priority.includes("Most Participants")) {
+        wantAscending = false;
+    }
+    else if (priority.includes("Highest Kitty")) {
+        wantAscending = false;
+    }
+
+    // Clean up priority
+    if (priority.includes("Difficulty")) {
+        priority = "Difficulty";
+    }
+    else if (priority.includes("Participants")) {
+        priority = "Participants";
+    }
+    else if (priority.includes("Kitty")) {
+        priority = "Kitty";
+    }
+    waitForElement("#elite").then(async (input) => {
+        input.value = 0;
+    });
+
+    waitForElement("#" + compType).then(async (table) => {
+        setTimeout(() => {
+            const aToTrigger = $(table).find(`a:contains("${priority}")`)
+            if (aToTrigger) {
+                const firstA = $(aToTrigger).first();
+                if (firstA && firstA[0]) {
+                    let switchAgain = helperCheckSort(firstA);
+                    if (!switchAgain) {
+                        doneSortingCompetitions(table);
+                    }
+                    // console.log("Result of switchAgain is ", switchAgain);
+                }
+            }
+        }, 100);
+    });
+    function helperCheckSort(firstA) {
+
+        let isDescending = checkForAscOrDesc(firstA);
+        // console.log("Is descending is ", isDescending, " want ascending is ", wantAscending);
+        if (isDescending == wantAscending || isDescending == null) {
+            // Click if we want ascending and it's descending, or vice versa
+            // Or if we don't want ascending and it's not descending
+            firstA[0].click();
+            return true;
+        }
+        else {
+            return false;
+        }
+
+
+    }
+}
 
 function checkForAscOrDesc(aElement) {
     let firstA_img = $(aElement).find("img");
@@ -135,7 +271,6 @@ async function watchECPage() {
         // Callback function to execute when mutations are observed
         const callback = (mutationList, observer) => {
             for (const mutation of mutationList) {
-                // console.log("Mutation is ", mutation)
                 if (mutation.type === 'childList') {
                     // Do button checking here?
                     // console.log("Child list mutation is ", mutation, "added nodes are ", mutation.addedNodes, " removed nodes are ", mutation.removedNodes);
@@ -434,29 +569,40 @@ async function clickMission() {
 
 function doneSortingEC() {
     setTimeout(() => {
-    const oddRows = $("tr.odd.highlight");
-    // const firstRow = $(tbody).find('tr').first();
-    if (oddRows) {
-        const firstRow = $(oddRows).first();
-        // console.log("firstRow is ", firstRow)
-        const firstRowButtons = $(firstRow).find('button');
+        const oddRows = $("tr.odd.highlight");
+        // const firstRow = $(tbody).find('tr').first();
+        if (oddRows) {
+            const firstRow = $(oddRows).first();
+            // console.log("firstRow is ", firstRow)
+            const firstRowButtons = $(firstRow).find('button');
             console.log("firstRowButtons is ", firstRowButtons)
 
-        if (firstRowButtons[1]) {
+            if (firstRowButtons[1]) {
                 // console.log("Going to click firstRowButtons[1]")
-            firstRowButtons[1].click();
-        }
-        else if (firstRowButtons[2]) {
+                firstRowButtons[1].click();
+            }
+            else if (firstRowButtons[2]) {
                 // console.log("Going to click firstRowButtons[2]")
-            firstRowButtons[2].click();
-        }
-        else if (firstRowButtons[3]) {
+                firstRowButtons[2].click();
+            }
+            else if (firstRowButtons[3]) {
                 // console.log("Going to click firstRowButtons[3]")
-            firstRowButtons[3].click();
-        }
+                firstRowButtons[3].click();
+            }
 
         }
     }, 100);
-    }
+}
 
+function doneSortingCompetitions(tableId) {
+    const rows = $(tableId).find("tr.odd");
+    if (rows) {
+        const firstRow = $(rows).first();
+        // console.log("firstRow is ", firstRow.get())
+        const firstRowButtons = $(firstRow).find('button');
+        if (firstRowButtons[0]) {
+            // console.log("Going to click firstRowButtons[0]", firstRowButtons[0])
+            firstRowButtons[0].click();
+        }
+    }
 }
