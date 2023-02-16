@@ -8,11 +8,11 @@
   - This project will remain open-sourced for peace of mind
   
 
-Key Features:
+**Key Features:**
 * Auto-scaling feature for feeding, which is the same as the VIP perk "Get the right amount of food preselected for your horses"
 * Auto-groom and auto-sleep after feeding the horse
 
-Optional:
+**Optional:**
 * Auto-mission after feeding the horse
 * Auto-enroll in the cheapest Equestrian Center for 3 days
 
