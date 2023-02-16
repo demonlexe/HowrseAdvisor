@@ -4,9 +4,9 @@ import { getData, setData } from "./chrome_store.js";
 const settingsDefaults = {
     extensionEnabled: true,
     autoFeedEnabled: true,
-    autoMissionEnabled: true,
+    autoMissionEnabled: false,
     autoGroomSleepEnabled: true,
-    autoECEnabled: true
+    autoECEnabled: false
 }
 
 export async function changeSetting(settingName, settingValue) {
