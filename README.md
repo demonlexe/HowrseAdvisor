@@ -1,7 +1,12 @@
 # HowrseAdvisor
 
-Hey there! This is a chrome extension that allows some small improvements to interacting with horses on Howrse. 
-I made this to help with AP farming mostly, but it can also be helpful for other interactions.
+*developer's notes*
+  - Hey there! This is a chrome extension that allows some small improvements to interacting with horses on Howrse. 
+  - I made this to help with AP farming mostly, but it can also be helpful for other interactions.
+  - After installing the extension, the Key Features will be enabled by default and the optional features will be disabled by default.
+  - Settings can be toggled by clicking the extension icon.
+  - This project will remain open-sourced for peace of mind
+  
 
 Key Features:
 * Auto-scaling feature for feeding, which is the same as the VIP perk "Get the right amount of food preselected for your horses"
@@ -20,6 +25,4 @@ Optional:
 4. Enable/Pin the extension, if desired
 5. You're good to go!
 
-*footnote
-  After installing the extension, the Key Features will be enabled by default and the optional features will be disabled by default.
-  Settings can be toggled by clicking the extension icon.
+
