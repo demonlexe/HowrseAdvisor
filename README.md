@@ -10,11 +10,12 @@
 
 **Key Features:**
 * Auto-scaling feature for feeding, which is the same as the VIP perk "Get the right amount of food preselected for your horses"
-* Auto-groom and auto-sleep after feeding the horse
+* Auto-groom and put to bed after feeding the horse
 
 **Optional:**
-* Auto-mission after feeding the horse
-* Auto-enroll in the cheapest Equestrian Center for 3 days
+* Mission after feeding the horse
+* Quickly enroll in the cheapest Equestrian Center for 3 days
+* [BETA} Quick Competition feature
 
 ** INSTRUCTIONS FOR INSTALLATION **
 
