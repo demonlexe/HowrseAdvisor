@@ -261,6 +261,10 @@ async function monitorCareTabButtons() {
 }
 
 async function watchECPage() {
+    const isECEnabled = await getData("autoECEnabled");
+    if (!isECEnabled) {
+        return;
+    }
 
     waitForElement("#centresContent").then(async (value) => {
         // Options for the observer (which mutations to observe)
