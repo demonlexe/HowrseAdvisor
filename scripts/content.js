@@ -1,6 +1,6 @@
 const pricePerDayCap = 40;
 let statusRef = {
-    "GROOM_BUTTON_PENDING": false,
+    // "GROOM_BUTTON_PENDING": false,
     "SLEEP_BUTTON_PENDING": false,
     "FEED_BUTTON_PENDING": false,
     "MISSION_BUTTON_PENDING": false,
@@ -218,40 +218,38 @@ async function checkButtonsConnected(buttonCase) {
 
     switch (buttonCase) {
         case "ALL": {
-            if (!statusRef["GROOM_BUTTON_PENDING"]) {
-                waitForElement("#boutonNourrir").then(async (but) => {
-                    // Cleanup function. If this is clicked, we want to click groom.
-                    // console.log("Value is ", value);
-                    const jqueryVal = $(but);
-                    if (jqueryVal && jqueryVal.hasClass("nourrir-entame")) {
-                        clickGroom();
-                    }
-                });
-            }
+            // if (!statusRef["GROOM_BUTTON_PENDING"]) {
+            //     waitForElement("#boutonNourrir").then(async (but) => {
+            //         // Cleanup function. If this is clicked, we want to click groom.
+            //         // console.log("Value is ", value);
+            //         const jqueryVal = $(but);
+            //         if (jqueryVal && jqueryVal.hasClass("nourrir-entame")) {
+            //             clickGroom();
+            //         }
+            //     });
+            // }
 
-            if (!statusRef["SLEEP_BUTTON_PENDING"]) {
-                waitForElement("#boutonNourrir").then(async (but) => {
-                    // Cleanup function. If this is clicked, we want to click groom.
-                    // console.log("Value is ", value);
-                    const jqueryVal = $(but);
-                    if (jqueryVal && jqueryVal.hasClass("nourrir-entame")) {
-                        clickSleep();
-                    }
-                });
-            }
+            waitForElement("#boutonPanser").then(async (but) => {
+                const jqueryVal = $(but);
+                if (jqueryVal && jqueryVal.hasClass("action-disabled")) {
+                    clickSleep();
+                }
+            });
 
-            if (!statusRef["MISSION_BUTTON_PENDING"]) {
-                waitForElement("#boutonNourrir").then(async (but) => {
-                    // Cleanup function. If this is clicked, we want to click groom.
-                    // console.log("Value is ", value);
-                    const jqueryVal = $(but);
-                    if (jqueryVal && jqueryVal.hasClass("nourrir-entame")) {
-                        clickMission();
-                    }
-                });
-            }
+            // Click mission button if horse has been fed
+
+            waitForElement("#boutonNourrir").then(async (but) => {
+                // Cleanup function. If this is clicked, we want to click groom.
+                // console.log("Value is ", value);
+                const jqueryVal = $(but);
+                if (jqueryVal && jqueryVal.hasClass("nourrir-entame")) {
+                    clickMission();
+                }
+            });
         }
     }
+
+
 }
 
 async function monitorCareTabButtons() {
@@ -478,7 +476,7 @@ async function watchFeedButton() {
     }
     waitForElement("#feed-button").then(async (value) => {
         $(value).on('click', () => {
-            clickGroom();
+            // clickGroom();
             clickMission();
         });
 
@@ -495,38 +493,46 @@ async function clickSleep() {
         return;
     }
 
-    statusRef["SLEEP_BUTTON_PENDING"] = true;
-    setTimeout(() => {
-        waitForElement("#boutonCoucher").then((but) => {
-            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+    if (!statusRef["SLEEP_BUTTON_PENDING"]) {
+        statusRef["SLEEP_BUTTON_PENDING"] = true;
+        setTimeout(() => {
+            waitForElement("#boutonCoucher").then((but) => {
+                if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
-            $(but).on('click', () => { statusRef["SLEEP_BUTTON_PENDING"] = false; }); // end debounce after click registered
-            but.click();
+                $(but).on('click', () => {
+                    setTimeout(() => {
+                        statusRef["SLEEP_BUTTON_PENDING"] = false;
+                    }, 100);
 
-        });
-    }, 100);
-}
+                }); // end debounce after click registered
+                but.click();
 
-async function clickGroom() {
-    const isExtensionEnabled = await getData("extensionEnabled");
-    if (!isExtensionEnabled) {
-        return;
-    }
-    const isGroomEnabled = await getData("autoGroomSleepEnabled");
-    if (!isGroomEnabled) {
-        return;
+            });
+        }, 250);
     }
 
-    statusRef["GROOM_BUTTON_PENDING"] = true;
-    setTimeout(() => {
-        waitForElement("#boutonPanser").then((but) => {
-            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
-
-            $(but).on('click', () => { statusRef["GROOM_BUTTON_PENDING"] = false; }); // end debounce after click registered
-            but.click();
-        });
-    }, 100);
 }
+
+// async function clickGroom() {
+//     const isExtensionEnabled = await getData("extensionEnabled");
+//     if (!isExtensionEnabled) {
+//         return;
+//     }
+//     const isGroomEnabled = await getData("autoGroomSleepEnabled");
+//     if (!isGroomEnabled) {
+//         return;
+//     }
+
+//     statusRef["GROOM_BUTTON_PENDING"] = true;
+//     setTimeout(() => {
+//         waitForElement("#boutonPanser").then((but) => {
+//             if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+
+//             $(but).on('click', () => { statusRef["GROOM_BUTTON_PENDING"] = false; }); // end debounce after click registered
+//             but.click();
+//         });
+//     }, 100);
+// }
 
 async function clickMission() {
     const isExtensionEnabled = await getData("extensionEnabled");
@@ -539,39 +545,41 @@ async function clickMission() {
         return;
     }
 
-    statusRef["MISSION_BUTTON_PENDING"] = true;
-    setTimeout(() => {
-        waitForElement("#boutonMissionEquus").then((but) => { // Case for lesson mission
-            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+    if (!statusRef["MISSION_BUTTON_PENDING"]) {
+        statusRef["MISSION_BUTTON_PENDING"] = true;
+        setTimeout(() => {
+            waitForElement("#boutonMissionEquus").then((but) => { // Case for lesson mission
+                if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
-            $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-            but.click();
-        });
-    }, 100);
-    setTimeout(() => {
-        waitForElement("#boutonMissionForet").then((but) => { // Case for wood mission
-            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
+                but.click();
+            });
+        }, 100);
+        setTimeout(() => {
+            waitForElement("#boutonMissionForet").then((but) => { // Case for wood mission
+                if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
-            $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-            but.click();
-        });
-    }, 100);
-    setTimeout(() => {
-        waitForElement("#boutonMissionMontagne").then((but) => { // Case for iron mission
-            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
+                but.click();
+            });
+        }, 100);
+        setTimeout(() => {
+            waitForElement("#boutonMissionMontagne").then((but) => { // Case for iron mission
+                if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
-            $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-            but.click();
-        });
-    }, 100);
-    setTimeout(() => {
-        waitForElement("#boutonMissionPlage").then((but) => { // Case for desert mission
-            if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
+                but.click();
+            });
+        }, 100);
+        setTimeout(() => {
+            waitForElement("#boutonMissionPlage").then((but) => { // Case for desert mission
+                if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
-            $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-            but.click();
-        });
-    }, 100);
+                $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
+                but.click();
+            });
+        }, 100);
+    }
 
 }
 
