@@ -51,6 +51,7 @@ getSettingEnabled("autoMissionEnabled", "mission_flexSwitch");
 getSettingEnabled("autoGroomSleepEnabled", "groom_sleep_flexSwitch");
 getSettingEnabled("autoECEnabled", "ec_flexSwitch");
 getSettingEnabled("autoComp_excludeLowLevelComps", "elite_flexSwitch");
+getSettingEnabled("autoComp_autoParticipate", "auto_participate_flexSwitch");
 getSettingSelection("autoComp_competitionType", "competition-type-select");
 getSettingSelection("autoComp_priorityType", "competition-priority-select");
 
@@ -78,6 +79,11 @@ $('#ec_flexSwitch').on('change', function () {
 $('#elite_flexSwitch').on('change', function () {
     const isChecked = $(this).prop('checked');
     changeSetting("autoComp_excludeLowLevelComps", isChecked); return;
+});
+
+$('#auto_participate_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoComp_autoParticipate", isChecked); return;
 });
 
 $('#competition-type-select').on('change', function () {

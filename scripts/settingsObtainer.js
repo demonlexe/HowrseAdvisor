@@ -11,6 +11,7 @@ const settingsDefaults = {
     autoComp_competitionType: "race",
     autoComp_priorityType: "Participants",
     autoComp_excludeLowLevelComps: true,
+    autoComp_autoParticipate: false,
 }
 
 export async function changeSetting(settingName, settingValue) {

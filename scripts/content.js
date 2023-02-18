@@ -95,7 +95,7 @@ async function watchCompetitionPage() {
             for (const mutation of mutationList) {
                 if (mutation.type === 'childList') {
                     // Do button checking here?
-                    console.log("Child list mutation is ", mutation, "added nodes are ", mutation.addedNodes, " removed nodes are ", mutation.removedNodes);
+                    // console.log("Child list mutation is ", mutation, "added nodes are ", mutation.addedNodes, " removed nodes are ", mutation.removedNodes);
                     if (mutation.addedNodes && mutation.addedNodes.length > 0) {
                         chooseBestCompetition();
                     }
@@ -118,6 +118,40 @@ async function watchCompetitionPage() {
     });
 }
 
+async function postProcessCompetitionPage(table) {
+    const isExtensionEnabled = await getData("extensionEnabled");
+    if (!isExtensionEnabled) {
+        return false;
+    }
+    const excludeLowLevelComps = await getData("autoComp_excludeLowLevelComps");
+    if (!excludeLowLevelComps) {
+        doneSortingCompetitions(table);
+        return false;
+    }
+
+    const eliteCheck = $("#elite");
+    if (eliteCheck && eliteCheck.length > 0) {
+        const input = eliteCheck[0];
+        function loopUntilValue() {
+            if (input.value != 0) {
+                setTimeout(() => {
+                    input.click();
+                    setTimeout(() => {
+                        loopUntilValue();
+                    }, 100)
+                }, 100)
+            }
+            else {
+                doneSortingCompetitions(table);
+            }
+        }
+        loopUntilValue();
+    }
+    else {
+        doneSortingCompetitions(table);
+    }
+}
+
 async function chooseBestCompetition() {
     const proceed = await allowCompetitions();
     if (!proceed) {
@@ -129,10 +163,6 @@ async function chooseBestCompetition() {
     }
     let priority = await getData("autoComp_priorityType");
     if (!priority) {
-        return;
-    }
-    let excludeLowLevelComps = await getData("autoComp_excludeLowLevelComps");
-    if (excludeLowLevelComps == null) {
         return;
     }
 
@@ -158,9 +188,6 @@ async function chooseBestCompetition() {
     else if (priority.includes("Kitty")) {
         priority = "Kitty";
     }
-    waitForElement("#elite").then(async (input) => {
-        input.value = 0;
-    });
 
     waitForElement("#" + compType).then(async (table) => {
         setTimeout(() => {
@@ -170,7 +197,7 @@ async function chooseBestCompetition() {
                 if (firstA && firstA[0]) {
                     let switchAgain = helperCheckSort(firstA);
                     if (!switchAgain) {
-                        doneSortingCompetitions(table);
+                        postProcessCompetitionPage(table);
                     }
                     // console.log("Result of switchAgain is ", switchAgain);
                 }
@@ -614,15 +641,23 @@ function doneSortingEC() {
     }, 100);
 }
 
-function doneSortingCompetitions(tableId) {
-    const rows = $(tableId).find("tr.odd");
-    if (rows) {
-        const firstRow = $(rows).first();
-        // console.log("firstRow is ", firstRow.get())
-        const firstRowButtons = $(firstRow).find('button');
-        if (firstRowButtons[0]) {
-            // console.log("Going to click firstRowButtons[0]", firstRowButtons[0])
-            firstRowButtons[0].click();
+async function doneSortingCompetitions(tableId) {
+    let autoParticipate = await getData("autoComp_autoParticipate");
+
+    if (autoParticipate && autoParticipate == true) {
+        const rows = $(tableId).find("tr.odd");
+        if (rows) {
+            const firstRow = $(rows).first();
+            // console.log("firstRow is ", firstRow.get())
+            const firstRowButtons = $(firstRow).find('button');
+            if (firstRowButtons[0]) {
+                // console.log("Going to click firstRowButtons[0]", firstRowButtons[0])
+                setTimeout(() => {
+                    firstRowButtons[0].click();
+                }, 100)
+
+            }
         }
     }
+
 }
