@@ -23,7 +23,30 @@ let competitionMapping = {
     "Participants": 5,
 }
 
+const settingsDefaults = {
+    extensionEnabled: true,
+    autoDisplayItemsEnabled: true,
+    autoFeedEnabled: true,
+    autoMissionEnabled: false,
+    autoGroomSleepEnabled: true,
+    autoECEnabled: false,
+    autoCompEnabled: false,
+    autoComp_competitionType: "race",
+    autoComp_priorityType: "Participants",
+    autoComp_excludeLowLevelComps: true,
+    autoComp_autoParticipate: false,
+}
+
 // This is for if we were loaded from https://us.howrse.com/elevage/chevaux/cheval
+
+getData("extensionEnabled").then((isExtensionEnabled) => {
+    if (isExtensionEnabled == "null" || isExtensionEnabled == null) {
+        Object.keys(settingsDefaults).forEach(key => {
+            setData(key, settingsDefaults[key]);
+        });
+    }
+});
+
 
 const winPath = window.location.pathname;
 console.log(winPath);
