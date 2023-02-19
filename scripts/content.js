@@ -34,6 +34,7 @@ if (winPath) {
         monitorECButton();
         presetHayAndOats();
         monitorCareTabButtons();
+        displayItemsAtTop();
         console.log("Done inside case ", "elevage/chevaux/cheval")
     }
     else if (winPath.includes("elevage/chevaux/centreInscription")) {
@@ -277,6 +278,67 @@ async function checkButtonsConnected(buttonCase) {
     }
 
 
+}
+
+async function displayItemsAtTop() {
+    const isExtensionEnabled = await getData("extensionEnabled");
+    if (!isExtensionEnabled) {
+        return;
+    }
+
+    const isDisplayItemsAtTopEnabled = await getData("autoDisplayItemsEnabled");
+    if (!isDisplayItemsAtTopEnabled) {
+        return;
+    }
+
+    waitForElement("#objects-body-content").then(async (objectsDiv) => {
+        waitForElement("#image-body-content").then(async (value) => {
+            // const tableClone = $(objectsDiv).clone().appendTo($(value));
+            const objectElements = $(objectsDiv).find("a");
+            // console.log("Object elements are ", objectElements);
+            for (let step = 0; step < objectElements.length; step++) {
+                let clone = $(objectElements[step]).clone().appendTo($(value));
+                // .append($(value));
+            }
+        });
+
+    });
+    waitForElement("#reproduction-wrapper").then(async (reproDiv) => {
+        const findReproButt = $(reproDiv).find("a.saillir");
+        // const findInfoButt = $(reproDiv).find("a.general"); // Doesn't work
+
+        waitForElement("#mission-wrapper").then(async (missionDiv) => {
+            if (findReproButt && findReproButt[0]) {
+                let currBut = findReproButt[0];
+                const spot = $(missionDiv).find(".last");
+                if (spot && spot[0]) {
+                    const clone = $(currBut).clone().appendTo($(spot[0]));
+                }
+                // const butHref = $(currBut).attr("href");
+                // console.log("HREF is ", butHref)
+                // if (butHref && butHref.includes("rechercherMale")) {
+                //     console.log("Can be bred. (Female)")
+                // }
+
+            }
+
+            // const missionButtonHolder = $(missionDiv).find("div.middle");
+            // if (missionButtonHolder && missionButtonHolder[0]) {
+            //     const missionButton = $(missionButtonHolder).find("a");
+            //     if (missionButton && missionButton[0]) {
+            //         const spot = $(missionDiv).find(".first");
+            //         if (spot && spot[0]) {
+            //             const movedButton = $(missionButton).appendTo($(spot[0]));
+            //         }
+            //     }
+
+            // };
+        });
+
+    })
+    waitForElement("#mission-head-title").then(async (missionDivLabel) => {
+        missionDivLabel.innerHTML = "Actions";
+    })
 }
 
 async function monitorCareTabButtons() {

@@ -3,6 +3,7 @@ import { getData, setData } from "./chrome_store.js";
 
 const settingsDefaults = {
     extensionEnabled: true,
+    autoDisplayItemsEnabled: true,
     autoFeedEnabled: true,
     autoMissionEnabled: false,
     autoGroomSleepEnabled: true,

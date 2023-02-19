@@ -47,6 +47,7 @@ async function checkAutoCompEnabled() {
 checkExtensionEnabled();
 checkAutoCompEnabled();
 getSettingEnabled("autoFeedEnabled", "feed_flexSwitch");
+getSettingEnabled("autoDisplayItemsEnabled", "display_items_flexSwitch")
 getSettingEnabled("autoMissionEnabled", "mission_flexSwitch");
 getSettingEnabled("autoGroomSleepEnabled", "groom_sleep_flexSwitch");
 getSettingEnabled("autoECEnabled", "ec_flexSwitch");
@@ -55,6 +56,10 @@ getSettingEnabled("autoComp_autoParticipate", "auto_participate_flexSwitch");
 getSettingSelection("autoComp_competitionType", "competition-type-select");
 getSettingSelection("autoComp_priorityType", "competition-priority-select");
 
+$("#display_items_flexSwitch").on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoDisplayItemsEnabled", isChecked); return;
+});
 
 $('#feed_flexSwitch').on('change', function () {
     const isChecked = $(this).prop('checked');
