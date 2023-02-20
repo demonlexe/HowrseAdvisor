@@ -709,17 +709,13 @@ function doneSortingEC() {
             const firstRowButtons = $(firstRow).find('button');
             console.log("firstRowButtons is ", firstRowButtons)
 
-            if (firstRowButtons[1]) {
+            if (firstRowButtons[1] && !($(firstRowButtons[1]).hasClass("disabled"))) {
                 // console.log("Going to click firstRowButtons[1]")
                 firstRowButtons[1].click();
             }
-            else if (firstRowButtons[2]) {
+            else if (firstRowButtons[2] && !($(firstRowButtons[2]).hasClass("disabled"))) {
                 // console.log("Going to click firstRowButtons[2]")
                 firstRowButtons[2].click();
-            }
-            else if (firstRowButtons[3]) {
-                // console.log("Going to click firstRowButtons[3]")
-                firstRowButtons[3].click();
             }
 
         }
