@@ -334,17 +334,20 @@ async function displayItemsAtTop() {
                 if (butHref && butHref.includes("rechercherMale")) {
                     newImg = document.createElement("img");
                     newImg.src = "media/equideo/image/components/actionconsole/saillir.png"
-                    newImg.style.margin = "2px 3px 2px 0";
+                    // newImg.style.margin = "2px 3px 2px 0";
                     newImg.style.width = "15%";
                     newImg.style.height = "auto";
-                    newImg.classList.add("float-right");
+                    // newImg.classList.add("float-right");
                 }
 
             }
 
-            waitForElement("#personnalisation").then(async (value) => {
+            waitForElement("#module-2").then(async (value) => {
                 if (newImg) {
-                    $(newImg).prependTo(($(value)));
+                    let nameHdr = $(value).find("h1.horse-name");
+                    if (nameHdr && nameHdr[0]) {
+                        $(newImg).appendTo(($(nameHdr[0])));
+                    }
                 }
             });
 
