@@ -162,17 +162,17 @@ async function postProcessCompetitionPage(table) {
     if (eliteCheck && eliteCheck.length > 0) {
         const input = eliteCheck[0];
         function loopUntilValue() {
-            if (input.value != 0) {
-                setTimeout(() => {
+            setTimeout(() => {
+                if (input.value != 0) {
                     input.click();
-                    setTimeout(() => {
-                        loopUntilValue();
-                    }, 100)
-                }, 100)
-            }
-            else {
-                doneSortingCompetitions(table);
-            }
+                    loopUntilValue();
+                }
+                else {
+                    doneSortingCompetitions(table);
+                }
+
+            }, 300)
+
         }
         loopUntilValue();
     }
