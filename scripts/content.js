@@ -72,6 +72,11 @@ if (winPath) {
         chooseBestCompetition();
         console.log("Done inside case ", "elevage/competition/");
     }
+    else if (winPath.includes("/chevaux/choisirNoms")) {
+        console.log("Inside case ", "/chevaux/choisirNoms");
+        chooseSampleName();
+        console.log("Done inside case ", "/chevaux/choisirNoms");
+    }
 }
 
 function waitForElement(selector) {
@@ -741,4 +746,33 @@ async function doneSortingCompetitions(tableId) {
         }
     }
 
+}
+
+async function chooseSampleName() {
+    const isExtensionEnabled = await getData("extensionEnabled");
+    if (!isExtensionEnabled) {
+        return;
+    }
+
+    waitForElement("#page-contents").then((val) => {
+        let genPot = "";
+        let gender = "M";
+        const strongGenPotText = $(val).find('strong:contains("Genetic potential")').first();
+        if (strongGenPotText) {
+            let holder = $(strongGenPotText).parent();
+            if (holder) {
+                genPot = $(holder).find('span').first()?.text();
+            }
+        }
+        const findFemaleImg = $(val).find('[src|="/media/equideo/image/fonctionnels/20/femelle.png"]')
+        console.log("Female img is ", findFemaleImg)
+        if (findFemaleImg && findFemaleImg[0]) { gender = "F" }
+
+        let newName = gender + " " + genPot;
+        let nameInput = $("#poulain-1");
+        if (nameInput) {
+            nameInput.val(newName);
+        }
+
+    })
 }

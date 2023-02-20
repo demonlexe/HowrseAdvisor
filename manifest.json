@@ -12,7 +12,8 @@
       "matches": [
         "https://us.howrse.com/elevage/chevaux/cheval*",
         "https://us.howrse.com/elevage/chevaux/centreInscription*",
-        "https://us.howrse.com/elevage/competition/*"
+        "https://us.howrse.com/elevage/competition/*",
+        "https://us.howrse.com/elevage/chevaux/choisirNoms*"
       ]
     }
   ],
