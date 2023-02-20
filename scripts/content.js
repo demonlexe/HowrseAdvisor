@@ -546,45 +546,62 @@ async function presetHayAndOats() {
         return;
     }
 
-    waitForElement("#haySlider").then((value) => {
-        const parent = $(value).parent();
-        const hayQuantity = $(parent).find('span.section-fourrage-quantity').first().text();
-        // console.log("hayQuantity is ", hayQuantity)
-        const quantities = hayQuantity.split('/');
-        const hayQuantityNumber = parseInt(quantities[0]);
-        const hayQuantityMax = parseInt(quantities[1]);
-        const hayToGive = hayQuantityMax - hayQuantityNumber;
-        // console.log("hayToGive is ", hayToGive)
-        const findSliderVal = $(value).find('li[data-number="' + hayToGive + '"]')
-        // console.log("findSliderVal is ", findSliderVal)
-        if (findSliderVal) {
-            const firstSlider = $(findSliderVal).first();
-            if (firstSlider && firstSlider[0]) {
-                // console.log("firstSlider is ", firstSlider)
-                firstSlider[0].click();
-            }
-        }
-    });
 
-    waitForElement("#oatsSlider").then((value) => {
-        const parent = $(value).parent();
-        const oatsQuantity = $(parent).find('span.section-avoine-quantity').first().text();
-        // console.log("oatsQuantity is ", oatsQuantity)
-        const quantities = oatsQuantity.split('/');
-        const oatsQuantityNumber = parseInt(quantities[0]);
-        const oatsQuantityMax = parseInt(quantities[1]);
-        const oatsToGive = oatsQuantityMax - oatsQuantityNumber;
-        // console.log("oatsToGive is ", oatsToGive)
-        const findSliderVal = $(value).find('li[data-number="' + oatsToGive + '"]')
-        // console.log("findSliderVal is ", findSliderVal)
-        if (findSliderVal) {
-            const firstSlider = $(findSliderVal).first();
-            if (firstSlider && firstSlider[0]) {
-                // console.log("firstSlider is ", firstSlider)
-                firstSlider[0].click();
+
+    waitForElement("#care-tab-feed").then((careTab) => {
+        let findSliderVal;
+        const isUnderWeight = $(careTab).find('span:contains("underweight")').first();
+        const isOverWeight = $(careTab).find('span:contains("overweight")').first();
+
+        waitForElement("#haySlider").then((value) => {
+            const parent = $(value).parent();
+            const hayQuantity = $(parent).find('span.section-fourrage-quantity').first().text();
+            // console.log("hayQuantity is ", hayQuantity)
+            const quantities = hayQuantity.split('/');
+            const hayQuantityNumber = parseInt(quantities[0]);
+            const hayQuantityMax = parseInt(quantities[1]);
+            const hayToGive = hayQuantityMax - hayQuantityNumber;
+            // console.log("hayToGive is ", hayToGive)
+            if (isUnderWeight && isUnderWeight[0]) {
+                findSliderVal = $(value).find('li[data-number="' + 20 + '"]')
             }
-        }
-    });
+            else if (isOverWeight && isOverWeight[0]) {
+                findSliderVal = $(value).find('li[data-number="' + 0 + '"]')
+            }
+            else {
+                findSliderVal = $(value).find('li[data-number="' + hayToGive + '"]')
+            }
+
+            // console.log("findSliderVal is ", findSliderVal)
+            if (findSliderVal) {
+                const firstSlider = $(findSliderVal).first();
+                if (firstSlider && firstSlider[0]) {
+                    // console.log("firstSlider is ", firstSlider)
+                    firstSlider[0].click();
+                }
+            }
+        });
+
+        waitForElement("#oatsSlider").then((value) => {
+            const parent = $(value).parent();
+            const oatsQuantity = $(parent).find('span.section-avoine-quantity').first().text();
+            // console.log("oatsQuantity is ", oatsQuantity)
+            const quantities = oatsQuantity.split('/');
+            const oatsQuantityNumber = parseInt(quantities[0]);
+            const oatsQuantityMax = parseInt(quantities[1]);
+            const oatsToGive = oatsQuantityMax - oatsQuantityNumber;
+            // console.log("oatsToGive is ", oatsToGive)
+            const findSliderVal = $(value).find('li[data-number="' + oatsToGive + '"]')
+            // console.log("findSliderVal is ", findSliderVal)
+            if (findSliderVal) {
+                const firstSlider = $(findSliderVal).first();
+                if (firstSlider && firstSlider[0]) {
+                    // console.log("firstSlider is ", firstSlider)
+                    firstSlider[0].click();
+                }
+            }
+        });
+    })
 
 }
 
