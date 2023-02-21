@@ -64,7 +64,7 @@ console.log(winPath);
 if (winPath) {
     if (winPath.includes("elevage/chevaux/cheval")) {
         console.log("Inside case ", "elevage/chevaux/cheval")
-        mappingTestCheval();
+        mappingTestPoints();
         monitorCareTab();
         monitorECButton();
         presetHayAndOats();
