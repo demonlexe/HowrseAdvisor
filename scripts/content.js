@@ -37,6 +37,17 @@ const settingsDefaults = {
     autoComp_autoParticipate: false,
 }
 
+const locStruct = {
+    mission: {
+        // mean
+        // strd Dev
+    },
+    sleep: {
+        // mean
+        // strd DEv
+    }
+}
+
 // This is for if we were loaded from https://us.howrse.com/elevage/chevaux/cheval
 
 getData("extensionEnabled").then((isExtensionEnabled) => {
@@ -53,6 +64,7 @@ console.log(winPath);
 if (winPath) {
     if (winPath.includes("elevage/chevaux/cheval")) {
         console.log("Inside case ", "elevage/chevaux/cheval")
+        mappingTestCheval();
         monitorCareTab();
         monitorECButton();
         presetHayAndOats();
@@ -76,6 +88,202 @@ if (winPath) {
         console.log("Inside case ", "/chevaux/choisirNoms");
         chooseSampleName();
         console.log("Done inside case ", "/chevaux/choisirNoms");
+    }
+}
+
+function calcMeanAndStandardDeviation(ValArr, strName) {
+    let XTot = 0;
+    let YTot = 0;
+    let ct = 0;
+
+    // Calculate mean
+    for (let i = 0; i < ValArr.length; i++) {
+        if (ValArr[i]) {
+            if (ValArr[i]["x"]) {
+                XTot += ValArr[i]["x"];
+            }
+            if (ValArr[i]["y"]) {
+                YTot += ValArr[i]["y"];
+            }
+            ct++;
+        }
+    }
+    let MeanX = XTot / ct;
+    let MeanY = YTot / ct;
+
+    // Calculate standard deviation
+    let NumeratorX = 0;
+    let NumeratorY = 0;
+    for (let i = 0; i < ValArr.length; i++) {
+        if (ValArr[i]) {
+            if (ValArr[i]["x"]) {
+                let top = Math.pow((ValArr[i]["x"] - MeanX), 2)
+                NumeratorX += top;
+            }
+            if (ValArr[i]["y"]) {
+                let top = Math.pow((ValArr[i]["y"] - MeanY), 2)
+                NumeratorY += top;
+            }
+            ct++;
+        }
+    }
+
+    let StandardDevX = Math.sqrt(NumeratorX / (ct - 1));
+    let StandardDevY = Math.sqrt(NumeratorY / (ct - 1));
+
+    locStruct[strName] = {
+        "xMean": MeanX,
+        "yMean": MeanY,
+        "xDev": StandardDevX,
+        "yDev": StandardDevY
+    };
+}
+
+async function mappingTestPoints() {
+    let missionValArr = await getData("missionButtonMappings") || [];
+    let sleepValArr = await getData("sleepButtonMappings") || [];
+
+    calcMeanAndStandardDeviation(missionValArr, "mission");
+    calcMeanAndStandardDeviation(sleepValArr, "sleep");
+
+    // console.log("Means and standard deviation", locStruct);
+
+    // console.log("Value arrays are ", missionValArr, sleepValArr)
+    waitForElement("#boutonMissionEquus").then(async (but) => { // Case for lesson mission
+        if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+        const isMissionsEnabled = await getData("autoMissionEnabled");
+        if (isMissionsEnabled) {
+            // don't collect data from automated clicks
+            return;
+        }
+
+        but.onclick = function (e) {
+            // e = Mouse click event.
+            var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left; //x position within the element.
+            var y = e.clientY - rect.top;  //y position within the element.
+            console.log("Left? : " + x + " ; Top? : " + y + ".");
+            let combinedPos = {
+                x: x,
+                y: y
+            }
+            // missionValArr.push(combinedPos);
+            // setData("missionButtonMappings", missionValArr);
+        }
+
+    });
+    waitForElement("#boutonMissionForet").then(async (but) => { // Case for wood mission
+        if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+        const isMissionsEnabled = await getData("autoMissionEnabled");
+        if (isMissionsEnabled) {
+            // don't collect data from automated clicks
+            return;
+        }
+
+        but.onclick = function (e) {
+            // e = Mouse click event.
+            var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left; //x position within the element.
+            var y = e.clientY - rect.top;  //y position within the element.
+            console.log("Left? : " + x + " ; Top? : " + y + ".");
+            let combinedPos = {
+                x: x,
+                y: y
+            }
+            // missionValArr.push(combinedPos);
+            // setData("missionButtonMappings", missionValArr);
+        }
+    });
+    waitForElement("#boutonMissionMontagne").then(async (but) => { // Case for iron mission
+        const isMissionsEnabled = await getData("autoMissionEnabled");
+        if (isMissionsEnabled) {
+            // don't collect data from automated clicks
+            return;
+        }
+        if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+
+        but.onclick = function (e) {
+            // e = Mouse click event.
+            var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left; //x position within the element.
+            var y = e.clientY - rect.top;  //y position within the element.
+            console.log("Left? : " + x + " ; Top? : " + y + ".");
+            let combinedPos = {
+                x: x,
+                y: y
+            }
+            // missionValArr.push(combinedPos);
+            // setData("missionButtonMappings", missionValArr);
+        }
+    });
+    waitForElement("#boutonMissionPlage").then(async (but) => { // Case for desert mission
+
+        const isMissionsEnabled = await getData("autoMissionEnabled");
+        if (isMissionsEnabled) {
+            // don't collect data from automated clicks
+            return;
+        }
+        if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+        but.onclick = function (e) {
+            // e = Mouse click event.
+            var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left; //x position within the element.
+            var y = e.clientY - rect.top;  //y position within the element.
+            console.log("Left? : " + x + " ; Top? : " + y + ".");
+            let combinedPos = {
+                x: x,
+                y: y
+            }
+            // missionValArr.push(combinedPos);
+            // setData("missionButtonMappings", missionValArr);
+        }
+    });
+    waitForElement("#boutonCoucher").then(async (but) => {
+        const isSleepEnabled = await getData("autoGroomSleepEnabled");
+        if (isSleepEnabled) {
+            // don't collect data from automated clicks
+            return;
+        }
+        if (!but || !$(but)) { return; }
+        but.onclick = function (e) {
+            // e = Mouse click event.
+            var rect = e.target.getBoundingClientRect();
+            var x = e.clientX - rect.left; //x position within the element.
+            var y = e.clientY - rect.top;  //y position within the element.
+            console.log("Left? : " + x + " ; Top? : " + y + ".");
+            let combinedPos = {
+                x: x,
+                y: y
+            }
+            // sleepValArr.push(combinedPos);
+            // setData("sleepButtonMappings", sleepValArr);
+        }
+    })
+}
+
+function clickOverride(element, locStructKey) {
+    var rect = element.getBoundingClientRect();
+
+    if (locStruct && locStruct[locStructKey] && locStruct[locStructKey]["xMean"]) {
+
+        let xMin = locStruct[locStructKey]["xMean"] - locStruct[locStructKey]["xDev"];
+        let xMax = locStruct[locStructKey]["xMean"] + locStruct[locStructKey]["xDev"];
+        let yMin = locStruct[locStructKey]["yMean"] - locStruct[locStructKey]["yDev"];
+        let yMax = locStruct[locStructKey]["yMean"] + locStruct[locStructKey]["yDev"];
+        let randomX = Math.random() * (xMax - xMin) + xMin;
+        let randomY = Math.random() * (yMax - yMin) + yMin;
+        if (randomX > 0 && randomY > 0) {
+            let evt = new MouseEvent("click", {
+                clientX: rect.left + randomX,
+                clientY: rect.top + randomY,
+                offsetX: randomX,
+                offsetY: randomY,
+                view: window,
+            });
+
+            // Send the event to the sleep button element
+            element.dispatchEvent(evt);
+        }
     }
 }
 
@@ -641,8 +849,8 @@ async function clickSleep() {
                     }, 100);
 
                 }); // end debounce after click registered
-                but.click();
-
+                // Create a synthetic click MouseEvent
+                clickOverride(but, "sleep")
             });
         }, 250);
     }
@@ -688,7 +896,7 @@ async function clickMission() {
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-                but.click();
+                clickOverride(but, "mission")
             });
         }, 100);
         setTimeout(() => {
@@ -696,7 +904,7 @@ async function clickMission() {
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-                but.click();
+                clickOverride(but, "mission")
             });
         }, 100);
         setTimeout(() => {
@@ -704,7 +912,7 @@ async function clickMission() {
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-                but.click();
+                clickOverride(but, "mission")
             });
         }, 100);
         setTimeout(() => {
@@ -712,7 +920,7 @@ async function clickMission() {
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
-                but.click();
+                clickOverride(but, "mission")
             });
         }, 100);
     }
