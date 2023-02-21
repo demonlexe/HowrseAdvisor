@@ -29,3 +29,14 @@
 // // function logOnDOMContentLoaded(details) {
 // //     console.log(`onDOMContentLoaded: ${details.url}`);
 // // }
+
+chrome.runtime.onInstalled.addListener((reason) => {
+    console.log("onInstalled", reason);
+    let reasonStr = reason["reason"] || "";
+    if (reason === chrome.runtime.OnInstalledReason.INSTALL || reasonStr.includes("install") || reasonStr.includes("update")) {
+        console.log("onInstalled: INSTALL")
+        chrome.tabs.create({
+            url: "../html/onboarding.html"
+        });
+    }
+});

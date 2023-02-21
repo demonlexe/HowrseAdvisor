@@ -23,20 +23,6 @@ let competitionMapping = {
     "Participants": 5,
 }
 
-const settingsDefaults = {
-    extensionEnabled: true,
-    autoDisplayItemsEnabled: true,
-    autoFeedEnabled: true,
-    autoMissionEnabled: false,
-    autoGroomSleepEnabled: true,
-    autoECEnabled: false,
-    autoCompEnabled: false,
-    autoComp_competitionType: "race",
-    autoComp_priorityType: "Participants",
-    autoComp_excludeLowLevelComps: true,
-    autoComp_autoParticipate: false,
-}
-
 const locStruct = {
     mission: {
         // mean
@@ -47,17 +33,8 @@ const locStruct = {
         // strd DEv
     }
 }
-
-// This is for if we were loaded from https://us.howrse.com/elevage/chevaux/cheval
-
-getData("extensionEnabled").then((isExtensionEnabled) => {
-    if (isExtensionEnabled == "null" || isExtensionEnabled == null) {
-        Object.keys(settingsDefaults).forEach(key => {
-            setData(key, settingsDefaults[key]);
-        });
-    }
-});
-
+let missionValArr = [];
+let sleepValArr = [];
 
 const winPath = window.location.pathname;
 console.log(winPath);
@@ -140,8 +117,8 @@ function calcMeanAndStandardDeviation(ValArr, strName) {
 }
 
 async function mappingTestPoints() {
-    let missionValArr = await getData("missionButtonMappings") || [];
-    let sleepValArr = await getData("sleepButtonMappings") || [];
+    missionValArr = await getData("missionButtonMappings") || [];
+    sleepValArr = await getData("sleepButtonMappings") || [];
 
     calcMeanAndStandardDeviation(missionValArr, "mission");
     calcMeanAndStandardDeviation(sleepValArr, "sleep");
@@ -167,8 +144,8 @@ async function mappingTestPoints() {
                 x: x,
                 y: y
             }
-            // missionValArr.push(combinedPos);
-            // setData("missionButtonMappings", missionValArr);
+            missionValArr.push(combinedPos);
+            setData("missionButtonMappings", missionValArr);
         }
 
     });
@@ -190,8 +167,8 @@ async function mappingTestPoints() {
                 x: x,
                 y: y
             }
-            // missionValArr.push(combinedPos);
-            // setData("missionButtonMappings", missionValArr);
+            missionValArr.push(combinedPos);
+            setData("missionButtonMappings", missionValArr);
         }
     });
     waitForElement("#boutonMissionMontagne").then(async (but) => { // Case for iron mission
@@ -212,8 +189,8 @@ async function mappingTestPoints() {
                 x: x,
                 y: y
             }
-            // missionValArr.push(combinedPos);
-            // setData("missionButtonMappings", missionValArr);
+            missionValArr.push(combinedPos);
+            setData("missionButtonMappings", missionValArr);
         }
     });
     waitForElement("#boutonMissionPlage").then(async (but) => { // Case for desert mission
@@ -234,17 +211,19 @@ async function mappingTestPoints() {
                 x: x,
                 y: y
             }
-            // missionValArr.push(combinedPos);
-            // setData("missionButtonMappings", missionValArr);
+            missionValArr.push(combinedPos);
+            setData("missionButtonMappings", missionValArr);
         }
     });
+}
+async function mappingTestPointsSleep() {
     waitForElement("#boutonCoucher").then(async (but) => {
         const isSleepEnabled = await getData("autoGroomSleepEnabled");
         if (isSleepEnabled) {
             // don't collect data from automated clicks
             return;
         }
-        if (!but || !$(but)) { return; }
+        if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
         but.onclick = function (e) {
             // e = Mouse click event.
             var rect = e.target.getBoundingClientRect();
@@ -255,8 +234,8 @@ async function mappingTestPoints() {
                 x: x,
                 y: y
             }
-            // sleepValArr.push(combinedPos);
-            // setData("sleepButtonMappings", sleepValArr);
+            sleepValArr.push(combinedPos);
+            setData("sleepButtonMappings", sleepValArr);
         }
     })
 }
@@ -834,6 +813,7 @@ async function clickSleep() {
     }
     const isSleepEnabled = await getData("autoGroomSleepEnabled");
     if (!isSleepEnabled) {
+        mappingTestPointsSleep();
         return;
     }
 

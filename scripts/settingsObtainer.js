@@ -2,11 +2,11 @@
 import { getData, setData } from "./chrome_store.js";
 
 const settingsDefaults = {
-    extensionEnabled: true,
+    extensionEnabled: false,
     autoDisplayItemsEnabled: true,
     autoFeedEnabled: true,
     autoMissionEnabled: false,
-    autoGroomSleepEnabled: true,
+    autoGroomSleepEnabled: false,
     autoECEnabled: false,
     autoCompEnabled: false,
     autoComp_competitionType: "race",

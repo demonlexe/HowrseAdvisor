@@ -1,0 +1,103 @@
+
+import { changeSetting, getSettingEnabled, getSettingSelection } from "./settingsObtainer.js";
+console.log("onboarding.js loaded");
+
+async function checkExtensionEnabled() {
+    await getSettingEnabled("extensionEnabled", "flexSwitchExtensionEnabled");
+    extensionEnabledBehavior();
+
+    function extensionEnabledBehavior() {
+        const isChecked = $('#flexSwitchExtensionEnabled').prop('checked');
+        if (isChecked) {
+            $('#subSettingsDiv').css("display", "block");
+        }
+        else {
+            $('#subSettingsDiv').css("display", "none");
+        }
+    }
+    $('#flexSwitchExtensionEnabled').on('change', function () {
+        const isChecked = $(this).prop('checked');
+        changeSetting("extensionEnabled", isChecked);
+        extensionEnabledBehavior()
+        return;
+    });
+}
+
+async function checkAutoCompEnabled() {
+    await getSettingEnabled("autoCompEnabled", "competition_flexSwitch");
+    autoCompEnabledBehavior();
+
+    function autoCompEnabledBehavior() {
+        const isChecked = $('#competition_flexSwitch').prop('checked');
+        if (isChecked) {
+            $('#autoCompSettingsCard').css("display", "block");
+        }
+        else {
+            $('#autoCompSettingsCard').css("display", "none");
+        }
+        return;
+    };
+    $('#competition_flexSwitch').on('change', function () {
+        const isChecked = $(this).prop('checked');
+        changeSetting("autoCompEnabled", isChecked);
+        autoCompEnabledBehavior();
+    });
+}
+
+checkExtensionEnabled();
+checkAutoCompEnabled();
+getSettingEnabled("autoFeedEnabled", "feed_flexSwitch");
+getSettingEnabled("autoDisplayItemsEnabled", "display_items_flexSwitch")
+getSettingEnabled("autoMissionEnabled", "mission_flexSwitch");
+getSettingEnabled("autoGroomSleepEnabled", "groom_sleep_flexSwitch");
+getSettingEnabled("autoECEnabled", "ec_flexSwitch");
+getSettingEnabled("autoComp_excludeLowLevelComps", "elite_flexSwitch");
+getSettingEnabled("autoComp_autoParticipate", "auto_participate_flexSwitch");
+getSettingSelection("autoComp_competitionType", "competition-type-select");
+getSettingSelection("autoComp_priorityType", "competition-priority-select");
+
+$("#display_items_flexSwitch").on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoDisplayItemsEnabled", isChecked); return;
+});
+
+$('#feed_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoFeedEnabled", isChecked); return;
+});
+
+$('#mission_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoMissionEnabled", isChecked); return;
+});
+
+$('#groom_sleep_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoGroomSleepEnabled", isChecked); return;
+});
+
+$('#ec_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoECEnabled", isChecked); return;
+});
+
+$('#elite_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoComp_excludeLowLevelComps", isChecked); return;
+});
+
+$('#auto_participate_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoComp_autoParticipate", isChecked); return;
+});
+
+$('#competition-type-select').on('change', function () {
+    const selectedValue = $(this).val();
+    console.log(selectedValue);
+    changeSetting("autoComp_competitionType", selectedValue); return;
+});
+$('#competition-priority-select').on('change', function () {
+    const selectedValue = $(this).val();
+    console.log(selectedValue);
+    changeSetting("autoComp_priorityType", selectedValue); return;
+});
