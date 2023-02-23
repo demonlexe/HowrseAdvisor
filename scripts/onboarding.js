@@ -50,6 +50,7 @@ getSettingEnabled("autoFeedEnabled", "feed_flexSwitch");
 getSettingEnabled("autoDisplayItemsEnabled", "display_items_flexSwitch")
 getSettingEnabled("autoMissionEnabled", "mission_flexSwitch");
 getSettingEnabled("autoGroomSleepEnabled", "groom_sleep_flexSwitch");
+getSettingEnabled("autoNavToNext", "auto_nav_flexSwitch");
 getSettingEnabled("autoECEnabled", "ec_flexSwitch");
 getSettingEnabled("autoComp_excludeLowLevelComps", "elite_flexSwitch");
 getSettingEnabled("autoComp_autoParticipate", "auto_participate_flexSwitch");
@@ -74,6 +75,11 @@ $('#mission_flexSwitch').on('change', function () {
 $('#groom_sleep_flexSwitch').on('change', function () {
     const isChecked = $(this).prop('checked');
     changeSetting("autoGroomSleepEnabled", isChecked); return;
+});
+
+$('#auto_nav_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoNavToNext", isChecked); return;
 });
 
 $('#ec_flexSwitch').on('change', function () {

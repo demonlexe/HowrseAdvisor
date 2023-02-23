@@ -7,6 +7,7 @@ const settingsDefaults = {
     autoFeedEnabled: true,
     autoMissionEnabled: false,
     autoGroomSleepEnabled: false,
+    autoNavToNext: false,
     autoECEnabled: false,
     autoCompEnabled: false,
     autoComp_competitionType: "race",
