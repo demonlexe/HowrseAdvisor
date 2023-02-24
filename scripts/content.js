@@ -738,7 +738,7 @@ async function presetHayAndOats() {
     waitForElement("#care-tab-feed").then((careTab) => {
         let findSliderVal;
         const isUnderWeight = $(careTab).find('span:contains("underweight")').first();
-        const isOverWeight = $(careTab).find('span:contains("overweight")').first();
+        const isOverWeight = $(careTab).find('span:contains("too fat")').first();
 
         waitForElement("#haySlider").then((value) => {
             const parent = $(value).parent();
