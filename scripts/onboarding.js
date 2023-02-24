@@ -1,61 +1,8 @@
 
-import { changeSetting, getSettingEnabled, getSettingSelection } from "./settingsObtainer.js";
+import { changeSetting, getSettingEnabled, getSettingSelection, usePresetSettings, initSettingElements } from "./settingsObtainer.js";
 console.log("onboarding.js loaded");
 
-async function checkExtensionEnabled() {
-    await getSettingEnabled("extensionEnabled", "flexSwitchExtensionEnabled");
-    extensionEnabledBehavior();
-
-    function extensionEnabledBehavior() {
-        const isChecked = $('#flexSwitchExtensionEnabled').prop('checked');
-        if (isChecked) {
-            $('#subSettingsDiv').css("display", "block");
-        }
-        else {
-            $('#subSettingsDiv').css("display", "none");
-        }
-    }
-    $('#flexSwitchExtensionEnabled').on('change', function () {
-        const isChecked = $(this).prop('checked');
-        changeSetting("extensionEnabled", isChecked);
-        extensionEnabledBehavior()
-        return;
-    });
-}
-
-async function checkAutoCompEnabled() {
-    await getSettingEnabled("autoCompEnabled", "competition_flexSwitch");
-    autoCompEnabledBehavior();
-
-    function autoCompEnabledBehavior() {
-        const isChecked = $('#competition_flexSwitch').prop('checked');
-        if (isChecked) {
-            $('#autoCompSettingsCard').css("display", "block");
-        }
-        else {
-            $('#autoCompSettingsCard').css("display", "none");
-        }
-        return;
-    };
-    $('#competition_flexSwitch').on('change', function () {
-        const isChecked = $(this).prop('checked');
-        changeSetting("autoCompEnabled", isChecked);
-        autoCompEnabledBehavior();
-    });
-}
-
-checkExtensionEnabled();
-checkAutoCompEnabled();
-getSettingEnabled("autoFeedEnabled", "feed_flexSwitch");
-getSettingEnabled("autoDisplayItemsEnabled", "display_items_flexSwitch")
-getSettingEnabled("autoMissionEnabled", "mission_flexSwitch");
-getSettingEnabled("autoGroomSleepEnabled", "groom_sleep_flexSwitch");
-getSettingEnabled("autoNavToNext", "auto_nav_flexSwitch");
-getSettingEnabled("autoECEnabled", "ec_flexSwitch");
-getSettingEnabled("autoComp_excludeLowLevelComps", "elite_flexSwitch");
-getSettingEnabled("autoComp_autoParticipate", "auto_participate_flexSwitch");
-getSettingSelection("autoComp_competitionType", "competition-type-select");
-getSettingSelection("autoComp_priorityType", "competition-priority-select");
+initSettingElements();
 
 $("#display_items_flexSwitch").on('change', function () {
     const isChecked = $(this).prop('checked');
@@ -99,11 +46,16 @@ $('#auto_participate_flexSwitch').on('change', function () {
 
 $('#competition-type-select').on('change', function () {
     const selectedValue = $(this).val();
-    console.log(selectedValue);
     changeSetting("autoComp_competitionType", selectedValue); return;
 });
 $('#competition-priority-select').on('change', function () {
     const selectedValue = $(this).val();
-    console.log(selectedValue);
     changeSetting("autoComp_priorityType", selectedValue); return;
+});
+$('#preset-type-select').on('change', function () {
+    const selectedValue = $(this).val();
+    console.log("Changed to ", selectedValue)
+    if (selectedValue) {
+        usePresetSettings(selectedValue);
+    }
 });

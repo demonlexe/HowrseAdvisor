@@ -43,6 +43,20 @@
     
         <ul></ul>
         <div class="p-1 d-flex justify-content-center">
+          <div class="card" id="presetCard" style="width: 19rem;">
+              <div class="card-body d-flex justify-content-center">
+                <label class="p-1">Preset:</label>
+                  <select id="preset-type-select" class="p-1">
+                    <option value="none">None</option>
+                    <option value="ap-farming">AP Farming</option>
+                    <option value="blupping">Blupping</option>
+                  </select>
+                
+              </div>
+            </div>
+            
+      </div>
+        <div class="p-1 d-flex justify-content-center">
             <div class="card" id="subSettingsCard" style="width: 19rem;">
                 <div class="card-body">
                   <h5 class="card-title">Settings</h5>
@@ -92,6 +106,7 @@
                     <option value="race">Breed Only</option>
                     <option value="public">All Horses</option>
                   </select>
+                  <br>
                   <label>Priority</label>
                   <select id="competition-priority-select">
                     <option value="Least Participants">Least Participants</option>
