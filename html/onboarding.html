@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./onboarding.css" />
+    <link href="../assets/bootstrap.min.css" rel="stylesheet">
+    <script type="text/javascript" src="../assets/jquery-3.6.1.js"></script>
+    <script src="../assets/bootstrap.bundle.min.js"></script>
+  </head>
+  <body>
+    <div class="p-3">
+        <h1 class="d-flex justify-content-center">PLEASE READ!!</h1>  
+        <p class="d-flex justify-content-center">
+            If you are not comfortable with the risks of using this extension, please do not use it.
+        </p>  
+        <p class="d-flex justify-content-center">
+            This extension is still in development and is not fully tested. 
+            Please report any bugs or issues to the GitHub repo: 
+        </p>
+        <a class="d-flex justify-content-center" href="https://github.com/demonlexe/HowrseAdvisor/issues">GitHub for HowrseAdvisor</a>
+    </div>
+
+    <div class="d-flex justify-content-center">
+        <div class="card" id="useExtensionCard" style="width: 19rem;">
+            <div>
+                <div class="d-flex justify-content-center">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchExtensionEnabled"> 
+                        <label class="form-check-label" for="flexSwitchExtensionEnabled">Use Extension</label>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <br>
+    
+    <div id="subSettingsDiv">
+        <h1 class="d-flex justify-content-center">Initialize Settings</h1>
+        <label class="d-flex justify-content-center">(Auto-saved)</label>
+    
+        <ul></ul>
+        <div class="p-1 d-flex justify-content-center">
+          <div class="card" id="presetCard" style="width: 19rem;">
+              <div class="card-body d-flex justify-content-center">
+                <label class="p-1">Preset:</label>
+                  <select id="preset-type-select" class="p-1">
+                    <option value="none">None</option>
+                    <option value="ap-farming">AP Farming</option>
+                    <option value="blupping">Blupping</option>
+                  </select>
+                
+              </div>
+            </div>
+            
+      </div>
+        <div class="p-1 d-flex justify-content-center">
+            <div class="card" id="subSettingsCard" style="width: 19rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Settings</h5>
+                  <!-- <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6> -->
+                  <!-- <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> -->
+                  <!-- <a href="#" class="card-link">Card link</a>
+                  <a href="#" class="card-link">Another link</a> -->
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="display_items_flexSwitch" > 
+                    <label class="form-check-label" for="display_items_flexSwitch">Add Extra Icons</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="feed_flexSwitch" > 
+                    <label class="form-check-label" for="feed_flexSwitch">Pre-Fill Food Meters</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="mission_flexSwitch"> 
+                    <label class="form-check-label" for="mission_flexSwitch">Mission After Feed</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="groom_sleep_flexSwitch"> 
+                    <label class="form-check-label" for="groom_sleep_flexSwitch">Sleep After Groomed</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="auto_nav_flexSwitch"> 
+                    <label class="form-check-label" for="auto_nav_flexSwitch">Go To Next Horse After Sleep</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="ec_flexSwitch" > 
+                    <label class="form-check-label" for="ec_flexSwitch">Auto Enroll Cheapest EC</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="competition_flexSwitch" > 
+                    <label class="form-check-label" for="competition_flexSwitch">Sort Competitions [BETA]</label>
+                  </div>
+                </div>
+              </div>
+              
+        </div>
+        <div class=" p-1 d-flex justify-content-center">
+            <div class="card" id="autoCompSettingsCard" style="width: 25rem;">
+                
+                <div class="card-body">
+                    <h5 class="card-title">Auto Comp Options [BETA]</h5>
+                  <label>Competition Type</label>
+                  <select id="competition-type-select">
+                    <option value="race">Breed Only</option>
+                    <option value="public">All Horses</option>
+                  </select>
+                  <br>
+                  <label>Priority</label>
+                  <select id="competition-priority-select">
+                    <option value="Least Participants">Least Participants</option>
+                    <option value="Most Participants">Most Participants</option>
+                    <option value="Lowest Difficulty">Lowest Difficulty</option>
+                    <option value="Highest Difficulty">Highest Difficulty</option>
+                    <option value="Highest Kitty">Highest Kitty</option>
+                    <option value="Lowest Kitty">Lowest Kitty</option>
+                  </select>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="elite_flexSwitch" > 
+                    <label class="form-check-label" for="elite_flexSwitch">Exclude low-level comps</label>
+                  </div>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="auto_participate_flexSwitch" > 
+                    <label class="form-check-label" for="auto_participate_flexSwitch">Participate when sorted</label>
+                  </div>
+                </div>
+        
+              </div>
+        </div>
+    </div>
+    
+    
+    
+    
+    
+
+    <script src="../scripts/onboarding.js" type="module"></script>
+</body>
+</html>
