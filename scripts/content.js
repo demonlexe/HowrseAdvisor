@@ -537,18 +537,16 @@ async function displayItemsAtTop() {
                     }
                 }
             });
-
-            waitForElement("#image-body-content").then(async (value) => {
-                // const tableClone = $(objectsDiv).clone().appendTo($(value));
-                const objectElements = $(objectsDiv).find("a");
-                // console.log("Object elements are ", objectElements);
-                for (let step = 0; step < objectElements.length; step++) {
-                    let clone = $(objectElements[step]).clone().appendTo($(value));
-                    // .append($(value));
-                }
-            });
-
         })
+        waitForElement("#image-body-content").then(async (value) => {
+            // const tableClone = $(objectsDiv).clone().appendTo($(value));
+            const objectElements = $(objectsDiv).find("a");
+            // console.log("Object elements are ", objectElements);
+            for (let step = 0; step < objectElements.length; step++) {
+                let clone = $(objectElements[step]).clone().appendTo($(value));
+                // .append($(value));
+            }
+        });
 
     });
 
