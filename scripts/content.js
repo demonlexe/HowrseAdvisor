@@ -426,7 +426,7 @@ async function chooseBestCompetition() {
         priority = "Kitty";
     }
 
-    waitForElement("#" + compType).then(async (table) => {
+    function watchCompTable(table) {
         setTimeout(() => {
             const aToTrigger = $(table).find(`a:contains("${priority}")`)
             if (aToTrigger) {
@@ -440,6 +440,15 @@ async function chooseBestCompetition() {
                 }
             }
         }, 100);
+    }
+
+    waitForElement("#divin").then(async (table) => {
+        watchCompTable(table);
+    });
+
+    waitForElement("#" + compType).then(async (table) => {
+        watchCompTable(table);
+
     });
     function helperCheckSort(firstA) {
 
