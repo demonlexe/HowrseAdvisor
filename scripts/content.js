@@ -993,9 +993,21 @@ function checkIfHasHypnos() {
     // }, 1000);
 }
 
-function checkIfValidEnergy() {
+function checkEnergyForMission(missionType) {
     let currentEnergy = document.getElementById("energie").innerText;
     let avgMissionCost = 27;
+    if (missionType == "wood") {
+        avgMissionCost = 27;
+    }
+    else if (missionType == "iron") {
+        avgMissionCost = 39;
+    }
+    else if (missionType == "lessons") {
+        avgMissionCost = 30;
+    }
+    else if (missionType == "sand") {
+        avgMissionCost = 27;
+    }
     let energyAfterMission = currentEnergy - avgMissionCost;
     console.log("Estimated energy after mission is ", energyAfterMission);
     if (energyAfterMission < 20) {
@@ -1017,16 +1029,15 @@ async function clickMission() {
         return;
     }
 
-    const hasEnoughEnergy = checkIfValidEnergy();
-    if (!hasEnoughEnergy) {
-        return;
-    };
-
     if (!statusRef["MISSION_BUTTON_PENDING"]) {
         statusRef["MISSION_BUTTON_PENDING"] = true;
         setTimeout(() => {
             waitForElement("#boutonMissionEquus").then((but) => { // Case for lesson mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("lessons");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
@@ -1035,6 +1046,10 @@ async function clickMission() {
         setTimeout(() => {
             waitForElement("#boutonMissionForet").then((but) => { // Case for wood mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("wood");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
@@ -1043,6 +1058,11 @@ async function clickMission() {
         setTimeout(() => {
             waitForElement("#boutonMissionMontagne").then((but) => { // Case for iron mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("iron");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
+
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
@@ -1051,6 +1071,11 @@ async function clickMission() {
         setTimeout(() => {
             waitForElement("#boutonMissionPlage").then((but) => { // Case for desert mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("sand");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
+
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
