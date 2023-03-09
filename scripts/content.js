@@ -688,6 +688,11 @@ async function monitorECButton() {
         if (!isECEnabled) {
             return;
         }
+        const hasHypnos = checkIfHasHypnos();
+        if (hasHypnos) {
+            // Don't enroll in EC if we have hypnos blanket.
+            return;
+        };
 
         // console.log("Element is ", value)
         const jqueryVal = $(value);
@@ -901,6 +906,30 @@ async function clickSleep() {
 //     }, 100);
 // }
 
+function checkIfHasHypnos() {
+    // setTimeout(() => {
+    let itemsTable = $("#objects-body-content");
+    let hypnos = $(itemsTable).find('img[alt*="hypnos"]');
+    if (hypnos && hypnos[0]) {
+        return true;
+    };
+    return false;
+    // }, 1000);
+}
+
+function checkIfValidEnergy() {
+    let currentEnergy = document.getElementById("energie").innerText;
+    let avgMissionCost = 27;
+    let energyAfterMission = currentEnergy - avgMissionCost;
+    console.log("Estimated energy after mission is ", energyAfterMission);
+    if (energyAfterMission < 20) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
 async function clickMission() {
     const isExtensionEnabled = await getData("extensionEnabled");
     if (!isExtensionEnabled) {
@@ -911,6 +940,11 @@ async function clickMission() {
     if (!isMissionsEnabled) {
         return;
     }
+
+    const hasEnoughEnergy = checkIfValidEnergy();
+    if (!hasEnoughEnergy) {
+        return;
+    };
 
     if (!statusRef["MISSION_BUTTON_PENDING"]) {
         statusRef["MISSION_BUTTON_PENDING"] = true;
