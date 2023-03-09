@@ -426,7 +426,7 @@ async function chooseBestCompetition() {
         priority = "Kitty";
     }
 
-    waitForElement("#" + compType).then(async (table) => {
+    function watchCompTable(table) {
         setTimeout(() => {
             const aToTrigger = $(table).find(`a:contains("${priority}")`)
             if (aToTrigger) {
@@ -440,7 +440,23 @@ async function chooseBestCompetition() {
                 }
             }
         }, 100);
-    });
+    }
+
+    // If divine, use that table; otherwise, use other table
+    setTimeout(() => {
+        let isDivin = $("#divin");
+        if (isDivin && isDivin.length > 0) {
+            watchCompTable(isDivin[0]);
+        }
+        else {
+            waitForElement("#" + compType).then(async (table) => {
+                watchCompTable(table);
+
+            });
+        }
+    }, 500)
+
+
     function helperCheckSort(firstA) {
 
         let isDescending = checkForAscOrDesc(firstA);
