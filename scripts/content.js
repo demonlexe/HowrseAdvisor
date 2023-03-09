@@ -442,14 +442,21 @@ async function chooseBestCompetition() {
         }, 100);
     }
 
-    waitForElement("#divin").then(async (table) => {
-        watchCompTable(table);
-    });
+    // If divine, use that table; otherwise, use other table
+    setTimeout(() => {
+        let isDivin = $("#divin");
+        if (isDivin && isDivin.length > 0) {
+            watchCompTable(isDivin[0]);
+        }
+        else {
+            waitForElement("#" + compType).then(async (table) => {
+                watchCompTable(table);
 
-    waitForElement("#" + compType).then(async (table) => {
-        watchCompTable(table);
+            });
+        }
+    }, 500)
 
-    });
+
     function helperCheckSort(firstA) {
 
         let isDescending = checkForAscOrDesc(firstA);
