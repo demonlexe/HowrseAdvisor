@@ -450,18 +450,18 @@ async function chooseBestCompetition() {
     }
 
     // If divine, use that table; otherwise, use other table
-    setTimeout(() => {
-        let isDivin = $("#divin");
-        if (isDivin && isDivin.length > 0) {
-            watchCompTable(isDivin[0]);
-        }
-        else {
-            waitForElement("#" + compType).then(async (table) => {
-                watchCompTable(table);
+    // setTimeout(() => {
+    let isDivin = $("#divin");
+    if (isDivin && isDivin.length > 0) {
+        watchCompTable(isDivin[0]);
+    }
+    else {
+        waitForElement("#" + compType).then(async (table) => {
+            watchCompTable(table);
 
-            });
-        }
-    }, 500)
+        });
+    }
+    // }, 500)
 
 
     function helperCheckSort(firstA) {
@@ -681,7 +681,7 @@ async function watchRidesDiv() {
         return;
     }
 
-    waitForElement("#walk-wrapper").then(async (value) => {
+    waitForElement("#walk-body-content").then(async (value) => {
         let breed = getHorseBreed();
         let presetIncrease = null;
         let presetDecrease = null;
