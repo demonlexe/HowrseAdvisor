@@ -131,6 +131,7 @@ export function initSettingElements() {
     getSettingEnabled("autoMissionEnabled", "mission_flexSwitch");
     getSettingEnabled("autoGroomSleepEnabled", "groom_sleep_flexSwitch");
     getSettingEnabled("autoNavToNext", "auto_nav_flexSwitch");
+    getSettingEnabled("autoSmartRidesEnabled", "smart_rides_flexSwitch");
     getSettingEnabled("autoECEnabled", "ec_flexSwitch");
     getSettingEnabled("autoComp_excludeLowLevelComps", "elite_flexSwitch");
     getSettingEnabled("autoComp_autoParticipate", "auto_participate_flexSwitch");
