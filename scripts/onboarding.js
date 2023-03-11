@@ -24,6 +24,11 @@ $('#groom_sleep_flexSwitch').on('change', function () {
     changeSetting("autoGroomSleepEnabled", isChecked); return;
 });
 
+$('#smart_rides_flexSwitch').on('change', function () {
+    const isChecked = $(this).prop('checked');
+    changeSetting("autoSmartRidesEnabled", isChecked); return;
+});
+
 $('#auto_nav_flexSwitch').on('change', function () {
     const isChecked = $(this).prop('checked');
     changeSetting("autoNavToNext", isChecked); return;

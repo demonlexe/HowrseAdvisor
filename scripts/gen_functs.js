@@ -78,8 +78,41 @@ function checkIfHasHypnos() {
     // }, 1000);
 }
 
-function checkEnergyForMission(missionType) {
+function checkIfHasHeel() {
+    let itemsTable = $("#objects-body-content");
+    let heel = $(itemsTable).find('img[alt*="achilles"]');
+    if (heel && heel[0]) {
+        return true;
+    };
+    return false;
+}
+
+function getHorseEnergy() {
     let currentEnergy = document.getElementById("energie").innerText;
+    return currentEnergy ? currentEnergy : 0;
+}
+
+function getSpendableEnergy() {
+    let energyTot = getHorseEnergy();
+    let hasHeel = checkIfHasHeel();
+    if (!hasHeel) {
+        return energyTot - 20;
+    }
+    return energyTot;
+}
+
+function getHorseRideMaxHrs(costPerHalfHr) {
+    let hrCst = costPerHalfHr ? costPerHalfHr * 2 : 16.2;
+    let horseEnergy = getSpendableEnergy();
+    console.log("horseEnergy = ", horseEnergy)
+    let x = ((horseEnergy / hrCst) * 10)
+    let y = Math.floor(x / 5) * 5;
+    let walkHrs = y / 10;
+    return walkHrs;
+}
+
+function checkEnergyForMission(missionType) {
+    let currentEnergy = getSpendableEnergy();
     let avgMissionCost = 27;
     if (missionType == "wood") {
         avgMissionCost = 27;
@@ -95,7 +128,7 @@ function checkEnergyForMission(missionType) {
     }
     let energyAfterMission = currentEnergy - avgMissionCost;
     console.log("Estimated energy after mission is ", energyAfterMission);
-    if (energyAfterMission < 20) {
+    if (energyAfterMission < 0) {
         return false;
     }
     else {
