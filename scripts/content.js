@@ -56,6 +56,12 @@ let sleepValOffsetUninit = [
     { x: 44.5, y: 1 },
     { x: 44.5, y: 24 },
 ];
+let breedBeachMapping = {
+    "Camargue": {
+        "I": "galop",
+        "D": "trot",
+    },
+};
 
 const winPath = window.location.pathname;
 console.log(winPath);
@@ -64,6 +70,7 @@ if (winPath) {
         console.log("Inside case ", "elevage/chevaux/cheval")
         mappingTestPoints();
         monitorCareTab();
+        watchRidesDiv();
         monitorECButton();
         presetHayAndOats();
         monitorCareTabButtons();
@@ -443,18 +450,18 @@ async function chooseBestCompetition() {
     }
 
     // If divine, use that table; otherwise, use other table
-    setTimeout(() => {
-        let isDivin = $("#divin");
-        if (isDivin && isDivin.length > 0) {
-            watchCompTable(isDivin[0]);
-        }
-        else {
-            waitForElement("#" + compType).then(async (table) => {
-                watchCompTable(table);
+    // setTimeout(() => {
+    let isDivin = $("#divin");
+    if (isDivin && isDivin.length > 0) {
+        watchCompTable(isDivin[0]);
+    }
+    else {
+        waitForElement("#" + compType).then(async (table) => {
+            watchCompTable(table);
 
-            });
-        }
-    }, 500)
+        });
+    }
+    // }, 500)
 
 
     function helperCheckSort(firstA) {
@@ -651,6 +658,67 @@ async function watchECPage() {
 
 }
 
+function changeIncreaseSlider(value, presetIncrease) {
+    let increaseSliderLbl = $(value).find('strong:contains("improve")');
+    let increaseSliderParent = $(increaseSliderLbl).parent();
+    let increaseSlider = $(increaseSliderParent).find("select").first();
+    if (presetIncrease && increaseSlider) {
+        increaseSlider.val(presetIncrease);
+    }
+}
+function changeDecreaseSlider(value, presetDecrease) {
+    let decreaseSliderLbl = $(value).find('strong:contains("decrease")');
+    let decreaseSliderParent = $(decreaseSliderLbl).parent();
+    let decreaseSlider = $(decreaseSliderParent).find("select").first();
+    if (presetDecrease && decreaseSlider) {
+        decreaseSlider.val(presetDecrease);
+    }
+}
+
+async function watchRidesDiv() {
+    const isExtensionEnabled = await getData("extensionEnabled");
+    if (!isExtensionEnabled) {
+        return;
+    }
+
+    waitForElement("#walk-body-content").then(async (value) => {
+        let breed = getHorseBreed();
+        let presetIncrease = null;
+        let presetDecrease = null;
+        if (breed && breedBeachMapping[breed]) {
+            presetIncrease = breedBeachMapping[breed].I;
+            presetDecrease = breedBeachMapping[breed].D;
+        }
+        // Options for the observer (which mutations to observe)
+        const config = { attributes: true, childList: true, subtree: true, attributeFilter: ['style'] };
+
+        // Callback function to execute when mutations are observed
+        const callback = (mutationList, observer) => {
+            for (const mutation of mutationList) {
+                // console.log("Mutation is ", mutation)
+                if (mutation.type === 'childList') {
+                    // Do button checking here?
+                } else if (mutation.type === 'attributes') {
+                    // console.log(`The ${mutation.attributeName} attribute was modified.`, "Mutation is ", mutation);
+                    const classList = mutation.target.classList // this returns an array of all classes
+                    const className = mutation.target.className // this returns a string containing all the classes separated with an space
+                    const id = mutation.target.id // this returns the id of the element
+                    if (id === "walk-tab-balade-plage") {
+                        changeIncreaseSlider(value, presetIncrease);
+                        changeDecreaseSlider(value, presetDecrease);
+                        // Walk button was clicked for beach.
+                    }
+                    // console.log(`The ${mutation.attributeName} attribute was modified.`, "Mutation is ", mutation, "Class list is ", classList, " class name is ", className, " id is ", id);
+                }
+            }
+        };
+        // Create an observer instance linked to the callback function
+        const observer = new MutationObserver(callback);
+
+        // Start observing the target node for configured mutations
+        observer.observe(value, config);
+    });
+}
 async function sortECTable() {
     waitForElement("#table-0").then(async (value) => {
 
@@ -905,6 +973,14 @@ async function clickSleep() {
 //         });
 //     }, 100);
 // }
+function getHorseBreed() {
+    let breedElem = $('a[href*="/dossiers/race?"]');
+    if (breedElem.length > 0) {
+        let breed = $(breedElem[0]).text();
+        return breed;
+    };
+    return null;
+}
 
 function checkIfHasHypnos() {
     // setTimeout(() => {
@@ -917,9 +993,21 @@ function checkIfHasHypnos() {
     // }, 1000);
 }
 
-function checkIfValidEnergy() {
+function checkEnergyForMission(missionType) {
     let currentEnergy = document.getElementById("energie").innerText;
     let avgMissionCost = 27;
+    if (missionType == "wood") {
+        avgMissionCost = 27;
+    }
+    else if (missionType == "iron") {
+        avgMissionCost = 39;
+    }
+    else if (missionType == "lessons") {
+        avgMissionCost = 30;
+    }
+    else if (missionType == "sand") {
+        avgMissionCost = 27;
+    }
     let energyAfterMission = currentEnergy - avgMissionCost;
     console.log("Estimated energy after mission is ", energyAfterMission);
     if (energyAfterMission < 20) {
@@ -941,16 +1029,15 @@ async function clickMission() {
         return;
     }
 
-    const hasEnoughEnergy = checkIfValidEnergy();
-    if (!hasEnoughEnergy) {
-        return;
-    };
-
     if (!statusRef["MISSION_BUTTON_PENDING"]) {
         statusRef["MISSION_BUTTON_PENDING"] = true;
         setTimeout(() => {
             waitForElement("#boutonMissionEquus").then((but) => { // Case for lesson mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("lessons");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
@@ -959,6 +1046,10 @@ async function clickMission() {
         setTimeout(() => {
             waitForElement("#boutonMissionForet").then((but) => { // Case for wood mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("wood");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
@@ -967,6 +1058,11 @@ async function clickMission() {
         setTimeout(() => {
             waitForElement("#boutonMissionMontagne").then((but) => { // Case for iron mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("iron");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
+
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
@@ -975,6 +1071,11 @@ async function clickMission() {
         setTimeout(() => {
             waitForElement("#boutonMissionPlage").then((but) => { // Case for desert mission
                 if (!but || !$(but) || $(but).hasClass("action-disabled")) { return; }
+                const hasEnoughEnergy = checkEnergyForMission("sand");
+                if (!hasEnoughEnergy) {
+                    return;
+                };
+
 
                 $(but).on('click', () => { statusRef["MISSION_BUTTON_PENDING"] = false; }); // end debounce after click registered
                 clickOverride(but, "mission")
