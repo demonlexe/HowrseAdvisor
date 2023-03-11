@@ -33,6 +33,22 @@ const bluppingDefaults = {
     autoComp_autoParticipate: false,
     preset_type: "blupping",
 }
+const fillerDefaults = {
+    extensionEnabled: true,
+    autoDisplayItemsEnabled: true,
+    autoFeedEnabled: true,
+    autoMissionEnabled: false,
+    autoGroomSleepEnabled: true,
+    autoSmartRidesEnabled: true,
+    autoNavToNext: true,
+    autoECEnabled: true,
+    autoCompEnabled: true,
+    autoComp_competitionType: "public",
+    autoComp_priorityType: "Most Participants",
+    autoComp_excludeLowLevelComps: true,
+    autoComp_autoParticipate: false,
+    preset_type: "filler",
+}
 const apFarmingDefaults = {
     extensionEnabled: true,
     autoDisplayItemsEnabled: true,
@@ -153,6 +169,13 @@ export async function usePresetSettings(preset) {
         case "ap-farming": {
             for (const key in apFarmingDefaults) {
                 changeSetting(key, apFarmingDefaults[key]);
+            }
+            initSettingElements();
+            break;
+        }
+        case "filler": {
+            for (const key in fillerDefaults) {
+                changeSetting(key, fillerDefaults[key]);
             }
             initSettingElements();
             break;
