@@ -9,7 +9,9 @@
   
 
 **FEATURE LIST** (configurable in settings)
-- Extra Icons
+- Extra Icons!
+- [Add Extra Icons](https://user-images.githubusercontent.com/84201567/224522919-fb8873c0-dff1-468c-a4fb-370c1a7d1a48.png)
+
 - Pre-Fill Food Meters
 - Mission After Feed
 - Sleep After Groomed
