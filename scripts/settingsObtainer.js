@@ -7,6 +7,7 @@ const settingsDefaults = {
     autoFeedEnabled: true,
     autoMissionEnabled: false,
     autoGroomSleepEnabled: false,
+    autoSmartRidesEnabled: false,
     autoNavToNext: false,
     autoECEnabled: false,
     autoCompEnabled: false,
@@ -22,6 +23,7 @@ const bluppingDefaults = {
     autoFeedEnabled: true,
     autoMissionEnabled: false,
     autoGroomSleepEnabled: true,
+    autoSmartRidesEnabled: true,
     autoNavToNext: false,
     autoECEnabled: false,
     autoCompEnabled: true,
@@ -31,12 +33,29 @@ const bluppingDefaults = {
     autoComp_autoParticipate: false,
     preset_type: "blupping",
 }
+const fillerDefaults = {
+    extensionEnabled: true,
+    autoDisplayItemsEnabled: true,
+    autoFeedEnabled: true,
+    autoMissionEnabled: false,
+    autoGroomSleepEnabled: true,
+    autoSmartRidesEnabled: true,
+    autoNavToNext: true,
+    autoECEnabled: true,
+    autoCompEnabled: true,
+    autoComp_competitionType: "public",
+    autoComp_priorityType: "Most Participants",
+    autoComp_excludeLowLevelComps: true,
+    autoComp_autoParticipate: false,
+    preset_type: "filler",
+}
 const apFarmingDefaults = {
     extensionEnabled: true,
     autoDisplayItemsEnabled: true,
     autoFeedEnabled: true,
     autoMissionEnabled: true,
     autoGroomSleepEnabled: true,
+    autoSmartRidesEnabled: true,
     autoNavToNext: true,
     autoECEnabled: true,
     autoCompEnabled: true,
@@ -128,6 +147,7 @@ export function initSettingElements() {
     getSettingEnabled("autoMissionEnabled", "mission_flexSwitch");
     getSettingEnabled("autoGroomSleepEnabled", "groom_sleep_flexSwitch");
     getSettingEnabled("autoNavToNext", "auto_nav_flexSwitch");
+    getSettingEnabled("autoSmartRidesEnabled", "smart_rides_flexSwitch");
     getSettingEnabled("autoECEnabled", "ec_flexSwitch");
     getSettingEnabled("autoComp_excludeLowLevelComps", "elite_flexSwitch");
     getSettingEnabled("autoComp_autoParticipate", "auto_participate_flexSwitch");
@@ -149,6 +169,13 @@ export async function usePresetSettings(preset) {
         case "ap-farming": {
             for (const key in apFarmingDefaults) {
                 changeSetting(key, apFarmingDefaults[key]);
+            }
+            initSettingElements();
+            break;
+        }
+        case "filler": {
+            for (const key in fillerDefaults) {
+                changeSetting(key, fillerDefaults[key]);
             }
             initSettingElements();
             break;
