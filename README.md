@@ -8,14 +8,15 @@
   - This project will remain open-sourced for peace of mind
   
 
-**Key Features:**
-* Auto-scaling feature for feeding, which is the same as the VIP perk "Get the right amount of food preselected for your horses"
-* Auto-groom and put to bed after feeding the horse
-
-**Optional:**
-* Mission after feeding the horse
-* Quickly enroll in the cheapest Equestrian Center for 3 days
-* [BETA} Quick Competition feature
+**FEATURE LIST** (configurable in settings)
+- Extra Icons
+- Pre-Fill Food Meters
+- Mission After Feed
+- Sleep After Groomed
+- Smart Rides
+- Move to next horse after "Sleep"
+- Auto Enroll in Cheapest EC (10 days)
+- Sort Competitions (Similar to Auto-Comp)
 
 ** INSTRUCTIONS FOR INSTALLATION **
 
