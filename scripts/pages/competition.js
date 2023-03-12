@@ -12,24 +12,33 @@ async function postProcessCompetitionPage(table) {
     const eliteCheck = $("#elite");
     if (eliteCheck && eliteCheck.length > 0) {
         const input = eliteCheck[0];
-        function loopUntilValue() {
-            setTimeout(() => {
-                if (input.value != 0) {
-                    input.click();
-                    loopUntilValue();
-                }
-                else {
-                    doneSortingCompetitions(table);
-                }
-
-            }, 300)
-
+        if (input.value != 0) {
+            input.click();
         }
-        loopUntilValue();
+        else {
+            doneSortingCompetitions(table);
+        }
     }
     else {
         doneSortingCompetitions(table);
     }
+}
+
+async function isDoneSortingLowLevel() {
+    const excludeLowLevelComps = await getData("autoComp_excludeLowLevelComps");
+    if (!excludeLowLevelComps) { return true; }
+
+    const eliteCheck = $("#elite");
+    if (eliteCheck && eliteCheck.length > 0) {
+        const input = eliteCheck[0];
+        if (input.value != 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    return true;
 }
 
 async function chooseBestCompetition() {
@@ -167,6 +176,11 @@ async function allowCompetitions() {
 };
 
 async function doneSortingCompetitions(tableId) {
+    let isDoneSortingLowLevelComps = await isDoneSortingLowLevel();
+    if (!isDoneSortingLowLevelComps) {
+        return;
+    }
+
     let autoParticipate = await getData("autoComp_autoParticipate");
 
     if (autoParticipate && autoParticipate == true) {
