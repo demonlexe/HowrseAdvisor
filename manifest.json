@@ -9,7 +9,8 @@
   "content_scripts": [
     {
       "js": ["assets/jquery-3.6.1.js","scripts/chrome_store_copy.js", "scripts/mappings_config.js", "scripts/math_functions.js", "scripts/gen_functs.js",
-      "scripts/pages/competition.js", "scripts/pages/ride_section.js", "scripts/pages/care_section.js", "scripts/pages/eq_center.js", "scripts/pages/new_foal.js",
+      "scripts/pages/competition.js", "scripts/pages/ride_section.js", "scripts/pages/care_section.js", "scripts/pages/breeding_section.js",
+      "scripts/pages/eq_center.js", "scripts/pages/new_foal.js",
       "scripts/content.js"],
       "matches": [
         "https://us.howrse.com/elevage/chevaux/cheval*",

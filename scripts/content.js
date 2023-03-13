@@ -33,6 +33,7 @@ if (winPath) {
         presetHayAndOats();
         monitorCareTabButtons();
         displayItemsAtTop();
+        monitorMaleCovers();
         console.log("Done inside case ", "elevage/chevaux/cheval")
     }
     else if (winPath.includes("elevage/chevaux/centreInscription")) {
